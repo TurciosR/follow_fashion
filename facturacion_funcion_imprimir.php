@@ -109,7 +109,7 @@ function print_ticket($id_factura)
 			$info_factura.="TEL : $field[telefono2]"."\n";
 		}
 
-		$info_factura.=$esp_init."NIT :  ".$nite." NRC :".$nrce."\n";
+		$info_factura.=$esp_init."NIT: ".$nite." NRC: ".$nrce."\n";
 		$info_factura.=$esp_init."RESOLUCION:  ".$resolucion."\n";
 		$info_factura.=$esp_init."DEL ".$desde." AL ".$hasta."\n";
 		$info_factura.=$esp_init."SERIE ".$serie."\n";
@@ -119,7 +119,7 @@ function print_ticket($id_factura)
 		$info_factura.=$esp_init."VENDEDOR: ".$vendedor."\n";
 		$info_factura.=$esp_init."CAJA : ".$caja. "  TURNO: ".$turno."\n";
 		$info_factura.=$esp_init."CLIENTE: ".$nombre_ape."|";
-		$info_factura.="DESCRIPCION  CANT.  P. UNIT    SUBTOT.\n|";
+		$info_factura.="CANT. DESCRIPCION P.         UNIT    SUBTOT.\n|";
 		//Obtener informacion de tabla Factura_detalle y producto o servicio
 		$result_fact_det=datos_fact_det($id_factura);
 		$nrows_fact_det=_num_rows($result_fact_det);
@@ -181,7 +181,7 @@ function print_ticket($id_factura)
 			$esp_col2=len_num($precio_unit,6);
 			$esp_col3=len_num($subtotal,7);
 			$esp_col4=len_num($descuento,11);
-			$info_factura.=str_pad($cantidad,4," ",STR_PAD_LEFT)."  ".str_pad(quitar_spc($descrip),18).str_pad($precio_unit,5," ",STR_PAD_LEFT)."  ".str_pad($subtotal,5," ",STR_PAD_LEFT)."\n";
+			$info_factura.=str_pad($cantidad,4," ",STR_PAD_LEFT)."  ".str_pad(quitar_spc($descrip),18).str_pad($precio_unit,5," ",STR_PAD_LEFT)."   ".str_pad($subtotal,5," ",STR_PAD_LEFT)."\n";
 			$info_factura.="      ".$desc_pr_fin."\n";
 			//$info_factura.="PRESENT: ".$descpre1."\n";
 			$cuantos=$cuantos+1;
@@ -223,9 +223,9 @@ function print_ticket($id_factura)
 	}
 	$esp_d6=len_num($porcentaje,$vals);
 	$esp_d5=len_num($tt_fin,2);
-	$info_factura.="|TOTAL GRAVADO".$esp_totales."$ ".$esp_d1.$total_value_gravado."\n";
-	$info_factura.="TOTAL EXENTO ".$esp_totales."$ ".$esp_d2.$total_value_exento."\n";
-	$info_factura.="TOTAL        ".$esp_totales."$ ".$esp_d3.$total_value_fin."\n";
+	$info_factura.="|TOTAL GRAVADO : $ ".$esp_d1.$total_value_gravado."\n";
+	$info_factura.="TOTAL EXENTO  : $ ".$esp_d2.$total_value_exento."\n";
+	$info_factura.="TOTAL         : $ ".$esp_d3.$total_value_fin."\n";
 	/*$info_factura.="DESCUENTO       ".$esp_totales."".$esp_d6.$porcentaje."%\n";
 	$info_factura.="TOTAL DESCUENTO  ".$esp_totales."  $ ".$esp_d4.sprintf("%.2f",$descuent)."\n";
 	$info_factura.="A PAGAR          ".$esp_totales."  $".str_pad(number_format($tt_fin,2,".",""),8," ",STR_PAD_LEFT)."\n";
@@ -1977,7 +1977,7 @@ function print_vale($id_movimiento){
 
 	//consulta
 	$sql="SELECT  e.id_empleado, e.nombre,
-	mc.concepto, mc.valor,mc.fecha,mc.hora,mc.entrada,mc.salida,mc.id_sucursal
+	mc.concepto, mc.valor,mc.fecha,mc.hora,mc.entrada,mc.nombre_recibe,mc.salida,mc.id_sucursal
 	FROM mov_caja AS mc
 	JOIN usuario AS e ON(e.id_usuario=mc.id_empleado)
 	WHERE  mc.id_movimiento='$id_movimiento'";
@@ -1991,6 +1991,7 @@ function print_vale($id_movimiento){
 	$fecha= $row["fecha"];
 	$valor= $row["valor"];
   $entrada= $row["entrada"];
+  $recibe = $row["nombre_recibe"];
 	//$id_sucursal=$row["id_sucursal"];
 	if($entrada==1){
 		$tipo="INGRESO";
@@ -2014,20 +2015,21 @@ function print_vale($id_movimiento){
 	$info_factura.=$esp_init.$empresa."\n";
 	//$info_factura.=$esp_init."SUCURSAL ".$nombre_sucursal1."\n";
 	$info_factura.=$esp_init."VALE # : ".$id_movimiento."\n";
-	$info_factura.=$esp_init."FECHA: ".ED($fecha)."\nHORA:".hora($hora)."\n";
+	$info_factura.=$esp_init."FECHA: ".ED($fecha)."HORA:".hora($hora)."\n";
 	$info_factura.=$esp_init."EMPLEADO: ".$nombre."\n";
 	$info_factura.=$esp_init.$tipo."\n";
 	$info_factura.=$esp_init."CONCEPTO: ".$concepto."\n";
 	$info_factura.=$esp_init."VALOR $: ".$valor."\n";
-	$info_factura.="\n";
-	$info_factura.="F. ".$line1;
-	$info_factura.="\n";
+	$info_factura.="\n\n";
+	$info_factura.="F. ".$line1."\n";
+	$info_factura.=$recibe;
 
 
 	return ($info_factura);
 
 }
-function print_corte($id_corte){
+function print_corte($id_corte)
+{
 	include_once "_core.php";
 	//EMPRESA
 	$id_sucursal=$_SESSION['id_sucursal'];
@@ -2162,10 +2164,10 @@ function print_corte($id_corte){
 	}
 	//$info_factura.=$esp_init0."SUCURSAL ".$nombre_sucursal."\n";
 	$info_factura.=$esp_init0."CORTE TIPO: ".$desc_tipo."\n";
-	/*$info_factura.=$esp_init0."RESOLUCION:  ".$resolucion."\n";
+	$info_factura.=$esp_init0."RESOLUCION:  ".$resolucion."\n";
 	$info_factura.=$esp_init0."DEL ".$desde." AL ".$hasta."\n";
 	$info_factura.=$esp_init0."SERIE ".$serie."\n";
-	$info_factura.=$esp_init0."FECHA RESOLUCION ".$fehca."\n";*/
+	$info_factura.=$esp_init0."FECHA RESOLUCION ".$fehca."\n";
 	$info_factura.=$esp_init0."CORTE DE CAJA  : ".$id_corte."|";
 	$info_factura.=$line1;
 	$info_factura.=$esp_init."FECHA: ".$fecha."  HORA:".hora($hora)."\n";

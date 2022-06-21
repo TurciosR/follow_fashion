@@ -1,1 +1,0 @@
-ALTER TABLE `detalle_compra` CHANGE `cantidad` `cantidad` DECIMAL(10,4) NULL DEFAULT NULL;
