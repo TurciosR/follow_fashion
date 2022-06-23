@@ -822,7 +822,8 @@ $(document).on("click", ".nofragil", function(){
 });
 
 
-$(document).on("click", ".grav", function(){
+$(document).on("click", ".grav", function()
+{
   var id = $(this).closest("tr").find("#id_producto_active").val();
 
   td = $(this).closest("td");
@@ -839,7 +840,8 @@ $(document).on("click", ".grav", function(){
 	});
 });
 
-$(document).on("click", ".exent", function(){
+$(document).on("click", ".exent", function()
+{
 	var id = $(this).closest("tr").find("#id_producto_active").val();
   td = $(this).closest("td");
 	$.ajax({
@@ -856,7 +858,8 @@ $(document).on("click", ".exent", function(){
 });
 
 
-$(document).on("click", ".fragilb", function(){
+$(document).on("click", ".fragilb", function()
+{
   var id = $(this).closest("tr").find("#id_producto_active").val();
   td = $(this).closest("td");
 	$.ajax({
@@ -873,7 +876,8 @@ $(document).on("click", ".fragilb", function(){
 	});
 });
 
-$(document).on("click", ".nofragilb", function(){
+$(document).on("click", ".nofragilb", function()
+{
   var id = $(this).closest("tr").find("#id_producto_active").val();
   td = $(this).closest("td");
 	$.ajax({
@@ -890,7 +894,8 @@ $(document).on("click", ".nofragilb", function(){
 });
 
 
-$(document).on("click", ".noac", function(){
+$(document).on("click", ".noac", function()
+{
   var id = $(this).closest("tr").find("#id_producto_active").val();
   td = $(this).closest("td");
 	$.ajax({
@@ -906,7 +911,8 @@ $(document).on("click", ".noac", function(){
 	});
 });
 
-$(document).on("click", ".siac", function(){
+$(document).on("click", ".siac", function()
+{
   var id = $(this).closest("tr").find("#id_producto_active").val();
   td = $(this).closest("td");
 	$.ajax({
@@ -921,3 +927,97 @@ $(document).on("click", ".siac", function(){
 		}
 	});
 });
+//imprimir barcodes
+$(document).on("click", "#viewModal .modal-body #btnPrintBcode", function (event)
+{
+	printBcode();
+});
+$(document).on('shown.bs.modal', function(e)
+{
+  if ( $("#viewModal .modal-body #qty").length > 0 ) {
+     $("#viewModal .modal-body #qty").numeric({
+    negative: false,
+    decimal: false
+  });
+  }
+  });
+let printBcode=()=>{
+    let id_producto = $("#viewModal .modal-body #id_prodd").val()
+    let qty         = $("#viewModal .modal-body #qty").val()
+    qty             =  isNaN(qty)?  1: qty==""? 1: parseInt(qty);
+    //let tipo_etiq = $("#viewModal .modal-body input[name='tipo_etiq']:checked").val();
+    let dataString  = 'process=printBcode'+'&id_producto='+id_producto
+    dataString     += '&qty='+qty+'&tipo_etiq=NA'
+      $.ajax({
+        type: 'POST',
+        url: "admin_producto.php",
+        data: dataString,
+        dataType: 'json',
+        success: function(datoss) {
+          let sist_ope = datoss.sist_ope;
+          let dir_print = datoss.dir_print;
+          let shared_print_barcode = datoss.shared_print_barcode;
+          //esta opcion es para  impresion en local y validar si es win o linux
+            if (sist_ope == 'win') {
+              $.post("http://" + dir_print + "printbcodew1.php", {
+                shared_print_barcode: shared_print_barcode,
+                datos: datoss.datos,
+              })
+            } else {
+              //alert("dir print:"+dir_print+"\n datos:"+datoss.datos)
+              $.post("http://" + dir_print + "printbcode1.php", {
+                datos: datoss.datos,
+              });
+            }
+        }
+      });
+}
+
+$(document).on("click", "#viewModal .modal-body #btnSetMT", function (event) {
+	setPrinterBcode();
+});
+
+let setPrinterBcode=()=>{
+    let tipo_etiq = $("#viewModal .modal-body input[name='tipo_etiq']:checked").val();
+    let dataString  = 'process=setPrintBcode'+'&tipo_etiq='+tipo_etiq
+      $.ajax({
+        type: 'POST',
+        url: "admin_producto.php",
+        data: dataString,
+        dataType: 'json',
+        success: function(datoss) {
+          let sist_ope = datoss.sist_ope;
+          let dir_print = datoss.dir_print;
+          let shared_print_barcode = datoss.shared_print_barcode;
+          //esta opcion es para  impresion en local y validar si es win o linux
+            if (sist_ope == 'win') {
+              $.post("http://" + dir_print + "setbcodew1.php", {
+                shared_print_barcode: shared_print_barcode,
+                datos: datoss.datos,
+              })
+            } else {
+              $.post("http://" + dir_print + "setbcode1.php", {
+                datos: datoss.datos,
+              });
+            }
+        }
+      });
+}
+
+$(document).on("click", "#viewModal .modal-body #btnSetMargin", function (event) {
+	setMarginBcode();
+});
+
+let setMarginBcode=()=>{
+    let leftmargin = $("#viewModal .modal-body #leftmargin").val();
+    let dataString  = 'process=setMarginBcode'+'&leftmargin='+leftmargin
+      $.ajax({
+        type: 'POST',
+        url: "admin_producto.php",
+        data: dataString,
+        dataType: 'json',
+        success: function(datoss) {
+            display_notify(datoss.typeinfo,datoss.msg);
+        }
+      });
+}

@@ -1,0 +1,1 @@
+-Se agregaron dos campos nuevos a la tabla de config_dir para comtrolar la impresora de barcode.

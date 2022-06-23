@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * This file is part of the OpenPyme1.
+ *
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ *
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ **/
 function print_ticket($id_factura)
 {
 	$id_sucursal=$_SESSION['id_sucursal'];
@@ -48,6 +55,8 @@ function print_ticket($id_factura)
 		$serie = $dats_caja["serie"];
 		$desde = $dats_caja["desde"];
 		$hasta = $dats_caja["hasta"];
+		$efectivo_fin = $row_fact["efectivo"];
+		$cambio_fin = $row_fact["cambio"];
 		$len_numero_doc=strlen($numero_doc)-4;
 		$num_fact=substr($numero_doc,0,$len_numero_doc);
 		$tipo_fact=substr($numero_doc,$len_numero_doc,4);
@@ -226,6 +235,11 @@ function print_ticket($id_factura)
 	$info_factura.="|TOTAL GRAVADO : $ ".$esp_d1.$total_value_gravado."\n";
 	$info_factura.="TOTAL EXENTO  : $ ".$esp_d2.$total_value_exento."\n";
 	$info_factura.="TOTAL         : $ ".$esp_d3.$total_value_fin."\n";
+	if(round($efectivo_fin,2)>0)
+	{
+		$info_factura .= "\nEFECTIVO $ ".$efectivo_fin."  CAMBIO   $ ".$cambio_fin."\n";
+	}
+
 	/*$info_factura.="DESCUENTO       ".$esp_totales."".$esp_d6.$porcentaje."%\n";
 	$info_factura.="TOTAL DESCUENTO  ".$esp_totales."  $ ".$esp_d4.sprintf("%.2f",$descuent)."\n";
 	$info_factura.="A PAGAR          ".$esp_totales."  $".str_pad(number_format($tt_fin,2,".",""),8," ",STR_PAD_LEFT)."\n";
@@ -2639,5 +2653,192 @@ function quitar_spc($cadena){
   $texto = str_replace($no_permitidas, $permitidas ,$cadena);
 	$texto = preg_replace('/[^a-zA-Z0-9ñÑ.|\/\-\_\+*$:= ]/u',"",($texto));
   return ($texto);
+}
+function p_set($linea,$dato,$inicio,$fin,$a)
+{
+	//$dato = quitar_spc($dato);
+	$linea= str_replace("\n", "", $linea);
+	$in = Unicode::substr($linea,0,$inicio-1);
+	$cuerpo =st(Unicode::substr($dato,0,($fin-$inicio)),($fin-$inicio)," ",$a);
+	$complemento = st(" ",strlen($linea)-strlen($in)-strlen($cuerpo));
+	return $in.$cuerpo.$complemento."\n";
+}
+
+function st($input,$lengt,$carac=" ",$di="R")
+{
+	// code..
+	$r = "";
+	switch ($di) {
+		case 'L':
+		// code...
+		$r=str_pad_unicode($input, $lengt, $carac, STR_PAD_LEFT);
+		break;
+		case 'R':
+		// code...
+		$r=str_pad_unicode($input, $lengt, $carac, STR_PAD_RIGHT);
+		break;
+		case 'B':
+		// code...
+		$r=str_pad_unicode($input, $lengt, $carac, STR_PAD_BOTH);
+		break;
+		default:
+		// code...
+		break;
+	}
+	return $r;
+}
+
+function dtl( $text, $width = '80', $lines = '10', $break = '\n', $cut = 0 ) {
+	$wrappedarr = array();
+	$wrappedtext = wordwrap( $text, $width, $break , true );
+	$wrappedtext = trim( $wrappedtext );
+	$arr = explode( $break, $wrappedtext );
+	return $arr;
+}
+
+function get_tipo($tipo)
+{
+	$val="";
+	// code...
+	switch ($tipo) {
+		case '0':
+		$val="CONTADO";
+			// code...
+			break;
+		case '1':
+			// code..
+		$val="CREDITO";
+			break;
+		case '2':
+			// code...
+		$val="TARJETA";
+			break;
+		case '3':
+			// code...
+		$val="CHEQUE";
+			break;
+		default:
+			// code..
+		$val="CONTADO";
+			break;
+	}
+	return $val;
+}
+
+function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT) {
+    $str_len = mb_strlen($str);
+    $pad_str_len = mb_strlen($pad_str);
+    if (!$str_len && ($dir == STR_PAD_RIGHT || $dir == STR_PAD_LEFT)) {
+        $str_len = 1; // @debug
+    }
+    if (!$pad_len || !$pad_str_len || $pad_len <= $str_len) {
+        return $str;
+    }
+
+    $result = null;
+    $repeat = ceil($str_len - $pad_str_len + $pad_len);
+    if ($dir == STR_PAD_RIGHT) {
+        $result = $str . str_repeat($pad_str, $repeat);
+        $result = mb_substr($result, 0, $pad_len);
+    } else if ($dir == STR_PAD_LEFT) {
+        $result = str_repeat($pad_str, $repeat) . $str;
+        $result = mb_substr($result, -$pad_len);
+    } else if ($dir == STR_PAD_BOTH) {
+        $length = ($pad_len - $str_len) / 2;
+        $repeat = ceil($length / $pad_str_len);
+        $result = mb_substr(str_repeat($pad_str, $repeat), 0, floor($length))
+                    . $str
+                       . mb_substr(str_repeat($pad_str, $repeat), 0, ceil($length));
+    }
+
+    return $result;
+}
+
+//imprimir barcodes on ZPL
+function print_bcode($id_producto, $qty, $tipo_etiq ){
+	$id_sucursal=$_SESSION['id_sucursal'];
+	$config_dir =getConfigDir($id_sucursal);
+	$row_dir_print=_fetch_array($config_dir);
+	$leftmarginlabel = $row_dir_print['leftmarginlabel'];
+	$empresa = empresa();
+	$empresa = quitar_tildes($empresa);
+	$row=getProducto($id_producto);
+	$id_prod=$row['id_producto'];
+	$descripcion= quitar_tildes($row['descripcion']);
+
+	$barcode=trim($row['barcode']);
+	$nombre=$row['nombre'];
+	$precio=sprintf("%.2f",$row['precio']);
+	$id_presentacion=$row['id_presentacion'];
+	$descpre=$row['descpre'];
+
+	$string="";
+
+	for ($i=0;$i<$qty ;$i++){
+		$posx=	$leftmarginlabel; $posy=10;//x,y posicion
+		$string.="^XA";
+		$string.="^CF0,25";
+		$string.="^FO".$posx.",".$posy."^FD".$empresa."^FS";
+		$string.="^CF0,30";
+		$string.="^BY2,1";
+		$posx+=5; $posy+=30;
+		$string.="^FO".$posx.",".$posy."^BY2,2";
+		$string.="^BCN,80,Y,N,N";
+		$string.="^FD".$barcode."^FS";
+		$posx-=5; $posy+=105;
+		$string.="^CF0,18";
+		$string.="^FO".$posx.",".$posy."^FD".$descripcion."^FS";
+		$posy+=20;
+		$string.="^FO".$posx.",".$posy."^FD".$descpre." ".$nombre."^FS";
+		//$posx=30;
+		//$posy+=5;
+		//$string.="^CF0,30";
+		//$string.="^FO".$posx.",".$posy."^FD"."$".$precio."^FS";
+		$string.="^XZ";
+	}
+	return ($string);
+}
+function print_bcodeSet($tipo_etiq ){
+	$mt ="^MTT";
+	if($tipo_etiq=='TD'){
+		$mt ="^MTD";
+	}
+	$string="";
+		$posx=30; $posy=10;//x,y posicion
+		$string.="^XA";
+		$string.=$mt."^JUS";
+		$string.="^XZ";
+	return ($string);
+}
+function getProducto($id_producto){
+	$sql="SELECT p.id_producto, p.barcode, p.descripcion,
+	pp.precio,pp.id_presentacion,
+	pp.descripcion as descpre, pr.nombre
+	FROM producto AS p, presentacion_producto AS pp, presentacion AS pr
+	WHERE  p.id_producto=pp.id_producto
+	AND pp.id_presentacion=pr.id_presentacion
+	AND p.id_producto='$id_producto'
+	";
+	$res=_query($sql);
+	$n=_num_rows($res);
+	$result="";
+	if ($n>0){
+		  $result= _fetch_array($res);
+	}
+	return $result;
+}
+function replacechar($string){
+	$latinchars = array('Ñ');
+	$encoded = array("_C3_91");
+	$data = str_replace($latinchars, $encoded, $string);
+	return $data;
+}
+
+function getConfigDir($id_sucursal){
+	$sql_dir_print="SELECT *  FROM config_dir WHERE id_sucursal='$id_sucursal'";
+  $result_dir_print=_query($sql_dir_print);
+
+  return   $result_dir_print;
+
 }
 ?>

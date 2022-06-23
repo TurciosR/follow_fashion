@@ -5,6 +5,7 @@ header("Expires: Wed, 1 Jan 2020 00:00:00 GMT");
  ?>
 <?php
 include ("_core.php");
+include('facturacion_funcion_imprimir.php');
 // Page setup
 function initial()
 {
@@ -326,9 +327,84 @@ function desac() {
 
 	echo json_encode ( $xdatos );
 }
+function printBcode()
+{
+  $qty 				 = $_POST['qty'];
+	$tipo_etiq	 = $_POST['tipo_etiq'];
+  $id_producto = $_POST['id_producto'];
+  $id_sucursal=$_SESSION['id_sucursal'];
+  //Valido el sistema operativo y lo devuelvo para saber a que puerto redireccionar
+  $info = $_SERVER['HTTP_USER_AGENT'];
+  if (strpos($info, 'Windows') == true) {
+    $so_cliente='win';
+  } else {
+    $so_cliente='lin';
+  }
+  //directorio de script impresion cliente
+  $sql_dir_print="SELECT *  FROM config_dir WHERE id_sucursal='$id_sucursal'";
+  $result_dir_print=_query($sql_dir_print);
+  $row_dir_print=_fetch_array($result_dir_print);
+  $dir_print=$row_dir_print['dir_print_script'];
+  $shared_print_barcode=$row_dir_print['shared_print_barcode'];
+  $nreg_encode['shared_print_barcode'] =$shared_print_barcode;
+  $nreg_encode['dir_print'] =$dir_print;
+  $nreg_encode['sist_ope'] =$so_cliente;
+	$nreg_encode['datos'] =print_bcode($id_producto, $qty,$tipo_etiq);
+  echo json_encode($nreg_encode);
+}
+function setPrintBcode()
+{
+	$id_sucursal = $_SESSION["id_sucursal"];
+	$tipo_etiq	 = $_POST['tipo_etiq'];
+  //Valido el sistema operativo y lo devuelvo para saber a que puerto redireccionar
+  $info = $_SERVER['HTTP_USER_AGENT'];
+  if (strpos($info, 'Windows') == true) {
+    $so_cliente='win';
+  } else {
+    $so_cliente='lin';
+  }
+	$table = 'config_dir';
 
+	$form_data = array(
+		'media_type' => $tipo_etiq,
+	);
+	$where_clause = "id_sucursal='".$id_sucursal."'";
+	$upd = _update ( $table, $form_data, $where_clause );
 
+  //directorio de script impresion cliente
+  $sql_dir_print="SELECT *  FROM config_dir WHERE id_sucursal='$id_sucursal'";
+  $result_dir_print=_query($sql_dir_print);
+  $row_dir_print=_fetch_array($result_dir_print);
+  $dir_print=$row_dir_print['dir_print_script'];
+  $shared_print_barcode=$row_dir_print['shared_print_barcode'];
+  $nreg_encode['shared_print_barcode'] =$shared_print_barcode;
+  $nreg_encode['dir_print'] =$dir_print;
+  $nreg_encode['sist_ope'] =$so_cliente;
+	$nreg_encode['datos'] =print_bcodeSet($tipo_etiq);
+  echo json_encode($nreg_encode);
+}
+function setMarginBcode()
+{
+	$id_sucursal = $_SESSION["id_sucursal"];
+	$leftmargin	 = $_POST['leftmargin'];
+  //Valido el sistema operativo y lo devuelvo para saber a que puerto redireccionar
+  $info = $_SERVER['HTTP_USER_AGENT'];
+	$table = 'config_dir';
+	$form_data = array(
+		'leftmarginlabel' => $leftmargin,
+	);
+	$where_clause = "id_sucursal='".$id_sucursal."'";
+	$upd = _update ( $table, $form_data, $where_clause );
+  if($upd){
+		$xdatos ['typeinfo'] = 'Success';
+		$xdatos ['msg'] = 'Registro actualizado con exito!';
 
+	}else{
+		$xdatos ['typeinfo'] = 'Error';
+		$xdatos ['msg'] = 'Registro no pudo ser actualizado !';
+	}
+  echo json_encode($xdatos);
+}
 
 if (!isset($_POST['process'])) {
     initial();
@@ -365,6 +441,15 @@ if (!isset($_POST['process'])) {
 						case 'desac':
         		desac();
         		break;
+            case 'printBcode':
+            printBcode();
+            break;
+            case 'setPrintBcode':
+            setPrintBcode();
+            break;
+            case 'setMarginBcode':
+            setMarginBcode();
+            break;
         }
     }
 }
