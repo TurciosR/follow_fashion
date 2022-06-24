@@ -7,24 +7,13 @@ Permisos al puerto
 su -c 'chmod 777 /dev/usb/lp0'
 */
 header("Access-Control-Allow-Origin: *");
-
 $printer="/dev/usb/lp0";
 $d = $_REQUEST['datos'];
-
 try {
-	//iniciar string
-	
-	$latinchars = array( 'ñ','á','é', 'í', 'ó','ú','ü','Ñ','Á','É','Í','Ó','Ú','Ü','°');
-	$encoded = array("\xa5","A","E","I","O","U","\x9a","\xa5","A","E","I","O","U","\x9a","\xf8");
-
-	//$datos = str_replace($latinchars, $encoded, $d);
-
 	//send data to USB printer
 	$fp=fopen($printer, 'wb');
 	fwrite($fp,$d);
 	fclose($fp);
-	echo "imnpreso";
-
 }
  catch (Throwable $t) {
     // Executed only in PHP 7, will not match in PHP 5.x

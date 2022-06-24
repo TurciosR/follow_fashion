@@ -1,11 +1,14 @@
 <?php
 include ("_core.php");
 $id_producto = $_REQUEST['id_producto'];
-$sql="SELECT p.exento, p.descripcion, p.barcode, p.estado, p.imagen,p.codart, pv.nombre, c.nombre_cat FROM producto AS p, proveedor as pv, categoria as c WHERE p.id_proveedor=pv.id_proveedor AND p.id_categoria=c.id_categoria AND  p.id_producto='$id_producto'";
+$sql="SELECT p.descripcion, p.barcode, p.estado, p.exento, p.imagen,p.codart, pv.nombre, c.nombre_cat
+FROM producto AS p, proveedor as pv, categoria as c
+WHERE p.id_proveedor=pv.id_proveedor AND p.id_categoria=c.id_categoria AND  p.id_producto='$id_producto'";
 $result = _query( $sql);
 $count = _num_rows( $result );
 
 $id_user=$_SESSION["id_usuario"];
+$id_sucursal=$_SESSION["id_sucursal"];
 $admin=$_SESSION["admin"];
 
 $uri = $_SERVER['SCRIPT_NAME'];
@@ -13,6 +16,13 @@ $filename=get_name_script($uri);
 $links=permission_usr($id_user,$filename);
 $sql_i = _fetch_array(_query("SELECT iva FROM sucursal where id_sucursal=$_SESSION[id_sucursal]"));
 $iva= round($sql_i['iva']/100,4);
+//directorio de script impresion cliente
+$sql_dir_print="SELECT *  FROM config_dir WHERE id_sucursal='$id_sucursal'";
+$result_dir_print=_query($sql_dir_print);
+$row_dir_print=_fetch_array($result_dir_print);
+$dir_print=$row_dir_print['dir_print_script'];
+$media_type=$row_dir_print['media_type'];
+$leftmarginlabel=$row_dir_print['leftmarginlabel'];
 ?>
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -50,27 +60,60 @@ $iva= round($sql_i['iva']/100,4);
                     $iva=0;
                   }
 
-                  echo"<tr><td>Descripcion:</td><td colspan=5>".$descripcion."</td></tr>";
-                  echo"<tr><td>Barcode:</td><td>".$barcode."</td><td>Categoria:</td><td colspan=2>".$nombre."</td></tr>";
-                  echo"<tr><td>Proveedor:</td><td colspan=5>".$nombre_proveedor."</td></tr>";
-                  echo"<tr><td>Estado:</td><td>".$estadoactivo."</td><td>CodArt:</td><td colspan=2>$row[codart]</td></tr>";
-                  echo"<tr><td colspan='5' class='font-bold text-center'><h4>Presentaciones</h4></td></tr>";
-                  $sql_p = _query("SELECT pp.precio, pp.costo, pp.descripcion,pp.id_presentacion, p.nombre FROM presentacion_producto as pp, presentacion as p WHERE pp.id_presentacion=p.id_presentacion AND pp.id_producto = '$id_producto'");
+                  echo"<tr><td>Descripcion:</td><td colspan=3>".$descripcion."</td></tr>";
+                  echo"<tr><td>Barcode:</td><td>".$barcode."</td><td>Categoria:</td><td>".$nombre."</td></tr>";
+                  echo"<tr><td>Proveedor:</td><td colspan=3>".$nombre_proveedor."</td></tr>";
+                  echo"<tr><td>Estado:</td><td>".$estadoactivo."</td><td>CodArt:</td><td>$row[codart]</td></tr>";
+                  echo"<tr><td colspan='4' class='font-bold text-center'><h4>Presentaciones</h4></td></tr>";
+                  $sql_p = _query("SELECT pp.precio, pp.costo, pp.descripcion,pp.id_presentacion, p.nombre
+                    FROM presentacion_producto as pp, presentacion as p
+                    WHERE pp.id_presentacion=p.id_presentacion AND pp.id_producto = '$id_producto'");
 
-                  echo"<tr><td>Presentación</td><td>Descripción</td><td>Costo</td><td>P.C</td><td>Precio</td></tr>";
+                  echo"<tr><td>Presentación</td><td>Descripción</td><td>Costo</td><td>Precio</td></tr>";
                   while ($roq = _fetch_array($sql_p))
                   {
                     $precio=$roq["precio"];
                     echo"<tr><td>".$roq["nombre"]."</td>
                     <td>".$roq["descripcion"]."</td>
                     <td>".$roq["costo"]."</td>
-                    <td>".round(($roq["costo"]*(1+$iva)),4)."</td>
+
                     <td>".$precio."</td>
                     </tr>";
                   }
+                  echo"<tr><td colspan='4' class='font-bold text-center'><h4>Imprimir Barcode</h4></td></tr>";
+                  if ($media_type=='TD'){
+                    $check_td=' checked ';
+                    $check_tt='';
+                  }else{
+                    $check_tt=' checked ';
+                    $check_td='';
+                  }
               ?>
+              <tr><td colspan=4><h5 class=' text-center'>Seleccione el tipo de Etiqueta</h5></td></tr>
+              <tr><td colspan=1 style="width:40%"><strong>Termica Directa</strong> <label class=" center-block">
+                <input type="radio" name="tipo_etiq" id="tipo_etiq1" value='TD' <?=$check_td;?>/></label></td>
+              <td colspan=2 style="width:40%"> <strong>Transferencia Termica</strong><label class=" center-block">
+                <input type="radio" name="tipo_etiq" id="tipo_etiq2" value='TT' <?=$check_tt;?> ></div></td></label>
+              <td colspan=1 style="width:20%">
+                <button type='button' class='btn btn-primary'  id='btnSetMT' name='btnSetMT'><i class='fa fa-check'></i> Cambiar</button> </td>
+            </tr>
+            <tr>
+              <td colspan=1><strong> Margen Izquierdo:</strong></td>
+              <td colspan=2><input type='text'  class='form-control numeric' id='leftmargin' name='leftmargin'  value='<?=$leftmarginlabel;?>' ></td>
+                <td colspan=1><button type='button' class='btn btn-primary'  id='btnSetMargin' name='btnSetMargin'><i class='fa fa-check'></i>Actualizar</button>
+                </td>
+
+            </tr>
+
+              <tr>
+                <td colspan=1><strong>Imprimir Cantidad:</strong></td>
+                <td colspan=2><input type='text'  class='form-control numeric' id='qty' name='qty' value='1' ></td>
+                  <td colspan=1><button type='button' class='btn btn-primary'  id='btnPrintBcode' name='btnPrintBcode'><i class='fa fa-print'></i> Imprimir</button>
+                  </td>
+                </tr>
             </tbody>
           </table>
+            <input type='hidden'  class='form-control' id='id_prodd' name='id_prodd' value='<?=$id_producto;?>' ></td>
         </div>
         <?php if ($imagen!="") { ?>
           <!--Widgwt imagen-->
