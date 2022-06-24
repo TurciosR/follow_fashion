@@ -1,8 +1,16 @@
 <?php
-
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
 $hostname = "localhost";
 $username = "root";
-$password = "pass";
+//$password = "pass";
+$password = "admin$";
 $dbname = "open_2cajas";;
 
 	$conexion = mysqli_connect("$hostname","$username","$password","$dbname");

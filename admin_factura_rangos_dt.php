@@ -40,12 +40,12 @@
 	array( 'db' => '`fac`.`id_factura`', 'dt' => 0, 'field' => 'id_factura' ),
 	array( 'db' => '`fac`.`numero_doc`', 'dt' => 1, 'field' => 'numero_doc' ),
 	array( 'db' => '`fac`.`num_fact_impresa`', 'dt' => 2, 'field' => 'num_fact_impresa' ),
-  array( 'db' => 'CONCAT(cte.nombre,". ")', 'dt' => 3, 'field' => 'cnr', 'as' =>'cnr'),
+  	array( 'db' => 'CONCAT(cte.nombre,". ")', 'dt' => 3, 'field' => 'cnr', 'as' =>'cnr'),
 	array( 'db' => 'CONCAT(fac.nombre,", ",fac.direccion)', 'dt' => 4, 'field' => 'dtfac' , 'as' => 'dtfac' ),
 	array( 'db' => '`fac`.`fecha`', 'dt' =>6, 'field' => 'fecha' ),
 	array( 'db' => '`fac`.`total`', 'dt' =>5, 'field' => 'total' ),
 	array( 'db' => '`fac`.`id_factura`', 'dt' => 7, 'formatter' => function( $id_factura, $row ){
-		$sql="select finalizada,anulada from factura where id_factura='$id_factura'";
+		$sql="SELECT finalizada,anulada FROM factura WHERE id_factura='$id_factura'";
 		$result=_query($sql);
 		$count=_num_rows($result);
 		$row=_fetch_array($result);
@@ -165,7 +165,8 @@
 
 			$menudrop.="</ul>
 		</div>";
-		return $menudrop;},
+		return $menudrop;
+	},
 		'field' => 'id_factura' ),
 
 	);

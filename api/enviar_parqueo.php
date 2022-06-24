@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
