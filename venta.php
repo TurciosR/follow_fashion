@@ -1,4 +1,17 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+ini_set('display_errors', 1);
+error_reporting( E_ERROR | E_PARSE );
+
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: Wed, 1 Jan 2020 00:00:00 GMT");
@@ -337,14 +350,14 @@ span.select2-container--open {
                               <tr class="row100 head">
                                 <th hidden class="success cell100 column10">Id</th>
                                 <th class='success  cell100 column30'>Descripci&oacute;n</th>
-                                <th class='success  cell100 column10'>Stock</th>
-                                <th class='success  cell100 column10'>Cantidad</th>
+                                <th class='success  cell100 column8'>Stock</th>
+                                <th class='success  cell100 column8'>Cantidad</th>
                                 <th class='success  cell100 column10'>Presentación</th>
                                 <th hidden class='success  cell100 column10'>Descripción</th>
                                 <th class='success cell100 column10'>Precios</th>
                                 <th  class='success cell100 column10'>$</span> </th>
                                 <th class='success  cell100 column10'>Subtotal</th>
-                                <th class='success  cell100 column10'>Acci&oacute;n</th>
+                                <th class='success  cell100 column14'>Acci&oacute;n</th>
                               </tr>
                             </thead>
                           </table>
@@ -1102,9 +1115,15 @@ function consultar_stock()
         if ($id_presentacione > 0) {
           $anda = "AND presentacion_producto.id_pp = '$id_presentacione'";
         }
-        $sql_p=_query("SELECT presentacion.nombre, presentacion_producto.descripcion,presentacion_producto.id_pp as id_presentacion,presentacion_producto.unidad,presentacion_producto.precio
+        $sql_p=_query(
+          "SELECT presentacion.nombre, presentacion_producto.descripcion,
+          presentacion_producto.id_pp as id_presentacion,
+          presentacion_producto.unidad,presentacion_producto.precio,
+          presentacion_producto.costo
         FROM presentacion_producto
-        JOIN presentacion ON presentacion.id_presentacion=presentacion_producto.id_presentacion
+        JOIN presentacion
+        ON presentacion.id_presentacion=presentacion_producto.id_presentacion
+
         WHERE presentacion_producto.id_producto='$id_producto'
         AND presentacion_producto.activo=1
         $anda
@@ -1112,10 +1131,11 @@ function consultar_stock()
         $select="<select class='sel form-control'>";
         while ($row=_fetch_array($sql_p)) {
           if ($i==0) {
-            $id_press=$row["id_presentacion"];
-            $unidadp=$row['unidad'];
-            $preciop=$row['precio'];
+            $id_press    =$row["id_presentacion"];
+            $unidadp     =$row['unidad'];
+            $preciop     =$row['precio'];
             $descripcionp=$row['descripcion'];
+            $prodCosto   = $row['costo'];
 
             $preciosArray = _getPrecios($id_press, $precios);
             $xc=0;
@@ -1148,14 +1168,15 @@ function consultar_stock()
 
 
         $select.="</select>";
-        $xdatos['perecedero']=$perecedero;
-        $xdatos['decimals']= $row1['decimals'];
+        $xdatos['perecedero'] = $perecedero;
+        $xdatos['decimals']   = $row1['decimals'];
         $xdatos['descripcion']= $descripcion;
         $xdatos['id_producto']= $id_productov;
-        $xdatos['select']= $select;
+        $xdatos['select']     = $select;
         $xdatos['select_rank']= $select_rank;
-        $xdatos['stock']= $stock;
-        $xdatos['preciop']= $preciop;
+        $xdatos['stock']      = $stock;
+        $xdatos['preciop']    = $preciop;
+        $xdatos['prodCosto']  = $prodCosto;
 
         $sql_e=_fetch_array(_query("SELECT exento FROM producto WHERE id_producto=$id_producto"));
         $exento=$sql_e['exento'];
@@ -1187,7 +1208,7 @@ function consultar_stock()
       }
     } else {
       $xdatos['typeinfo']="Error";
-      $xdatos['msg']="El codigo ingresado no pertenece a nungun producto";
+      $xdatos['msg']="El codigo ingresado no pertenece a ningun producto";
       echo json_encode($xdatos); //Return the JSON Array
     }
   } else {
@@ -2218,6 +2239,7 @@ function getpresentacion()
   $sql=_fetch_array(_query("SELECT * FROM presentacion_producto WHERE id_pp=$id_presentacion"));
   $precio=$sql['precio'];
   $unidad=$sql['unidad'];
+  $prodCosto = $sql['costo'];
   $descripcion=$sql['descripcion'];
   $id_producto=$sql['id_producto'];
   $sql_e=_fetch_array(_query("SELECT exento FROM producto WHERE id_producto=$id_producto"));
@@ -2270,7 +2292,7 @@ function getpresentacion()
   }
   $xdatos['unidad']=$unidad;
   $xdatos['descripcion']=$des;
-  $xdatos['descripcion']=$des;
+  $xdatos['prodCosto']  = $prodCosto;
   $xdatos['select_rank']=$select_rank;
   echo json_encode($xdatos);
 }
@@ -2569,6 +2591,7 @@ function tabla()
     $unidad=$sql['unidad'];
     $descripcion=$sql['descripcion'];
     $id_producto=$sql['id_producto'];
+    $prodCosto = $sql['costo'];
     $sql_e=_fetch_array(_query("SELECT exento FROM producto WHERE id_producto=$id_producto"));
     $exento=$sql_e['exento'];
 
@@ -2627,13 +2650,50 @@ function tabla()
       $iva=1+$iva;
       $xdatos['preciop_s_iva']= round(($precio/$iva), 8, PHP_ROUND_HALF_DOWN);
     }
-    $xdatos['unidad']=$unidad;
+    $xdatos['unidad']     =$unidad;
     $xdatos['descripcion']=$des;
-    $xdatos['descripcion']=$des;
+    $xdatos['prodCosto']  = $prodCosto;
     $xdatos['select_rank']=$select_rank;
     echo json_encode($xdatos);
 
 }
+
+/**
+ * Validar que existan los permisos adecuados que tiene el usuario para
+ * @return JSON Object resultado de la consulta
+ */
+function validate_unlockPercentagePrice(){
+  $unlockPass = MD5($_REQUEST['unlockPass']);
+  $result['typeInfo'] = 'Info';
+  $result['msg'] = 'Credenciales Incorrectas';
+
+  $findUser = _query(
+    "SELECT id_usuario FROM usuario WHERE admin=1 AND password='$unlockPass'"
+  );
+  if(_num_rows($findUser) > 0){
+    $findUser = _fetch_array($findUser);
+    $userPermission = _fetch_array(_query(
+      "SELECT COUNT(usuario_modulo.id_modulo) as permissionObtained
+      FROM usuario_modulo
+      LEFT JOIN modulo
+      ON modulo.id_modulo=usuario_modulo.id_modulo
+      WHERE modulo.filename='unlock_edit_price'
+      AND usuario_modulo.id_usuario=$findUser[id_usuario]"
+    ));
+
+    if($userPermission['permissionObtained'] > 0){
+      $result['typeInfo'] = 'Success';
+      $result['msg']      = 'Edicion de precio habilitada';
+    }else{
+      $result['typeInfo'] = 'Warning';
+      $result['msg']      = 'Usted no cuenta con los permisos para habilitar la edicion';
+    }
+    
+  }
+  header('ContentType: application/json');
+  echo json_encode($result);
+}
+
 //functions to load
 if (!isset($_REQUEST['process'])) {
   initial();
@@ -2698,6 +2758,9 @@ if (isset($_REQUEST['process'])) {
       case 'tabla':
       tabla();
       break;
+      case 'unlockPercentagePrice':
+          validate_unlockPercentagePrice();
+        break;
     }
   }
   ?>

@@ -1,6 +1,16 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
 $username = "root";
-$password = "admin$2022**.";
+//$password = "admin$2022**."; //Server config
+$password = "admin$";
 $hostname = "localhost";
 $dbname = "open_2cajas";
 date_default_timezone_set('America/El_Salvador');
@@ -59,6 +69,15 @@ function _insert_id(){
   $value = mysqli_insert_id($conexion);
   return $value;
 }
+
+/**
+ * Retorna las filas efectadas por la sentencia update.
+ */
+function _affected_rows(){
+	global $conexion;
+	return mysqli_affected_rows($conexion);
+}
+
 // End functions queries
 
 //funcion real escape string

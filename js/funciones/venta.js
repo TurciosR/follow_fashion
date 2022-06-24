@@ -329,6 +329,17 @@ $(document).ready(function() {
   $('#submit1').prop('disabled', false);
   //$('#print1').prop('disabled', false);
 });
+
+
+// newPrice by Utility Percentage updater (unlocked Modal)
+$(document).on('keyup change', '#unlock_percentOverCost', function(event) {
+  recalculatePrice_byPercent();
+});
+// newPrice by Utility Percentage updater (unlocked Modal)
+$(document).on('click', '#btn_unlockPercentApply', function(event) {
+  applyNewPrice_byPercent($(this).data('row-table'));
+});
+
 $(document).on('hidden.bs.modal', function(e) {
   var target = $(e.target);
   target.removeData('bs.modal').find(".modal-content").html('');
@@ -363,7 +374,7 @@ $(function() {
   $(document).on('hidden.bs.modal', function(e) {
     var target = $(e.target);
     target.removeData('bs.modal').find(".modal-content").html('');
-    location.reload();
+    //location.reload();
   });
 
 });
@@ -1875,22 +1886,22 @@ function addProductList(id_proda, tip)
 		{
 			if(data.typeinfo == "Success")
 			{
-	      var id_prod = data.id_producto;
-	      var precio_venta = data.precio_venta;
-	      var unidades = data.unidades;
+	      var id_prod     = data.id_producto;
+	      var precio_venta= data.precio_venta;
+	      var unidades    = data.unidades;
 	      var existencias = data.stock;
-	      var perecedero = data.perecedero;
-	      var descrip_only = data.descripcion;
-	      var fecha_fin_oferta = data.fecha_fin_oferta;
-	      var exento = data.exento;
-	      var categoria = data.categoria;
+	      var perecedero  = data.perecedero;
+	      var descrip_only= data.descripcion;
+	      var exento      = data.exento;
+	      var categoria   = data.categoria;
 	      var select_rank = data.select_rank;
+        let prodCosto   = data.prodCosto;
+        var fecha_fin_oferta = data.fecha_fin_oferta;
 
         var decimals=data.decimals;
         if (decimals==1) {
           categoria=86;
         }
-
 
 	      var preciop_s_iva = parseFloat(data.preciop_s_iva);
 
@@ -1901,25 +1912,39 @@ function addProductList(id_proda, tip)
 	      var exento = "<input type='hidden' id='exento' name='exento' value='" + exento + "'>";
 	      var subtotal = subt(data.preciop, 1);
 	      subt_mostrar = subtotal.toFixed(2);
-	      var cantidades = "<td class='cell100 column10 text-success'><input type='text'  class='form-control decimal2 " + categoria + " cant' id='cant' name='cant' value='' style='width:60px;'></td>";
 	      tr_add = '';
 	      tr_add += "<tr  class='row100 head' id='" + filas + "'>";
 	      tr_add += "<td hidden class='cell100 column10 text-success id_pps'><input type='hidden' id='unidades' name='unidades' value='" + data.unidadp + "'>" + id_prod + "</td>";
-	      tr_add += "<td class='cell100 column30 text-success'>" + descrip_only + exento + '</td>';
-	      tr_add += "<td class='cell100 column10 text-success' id='cant_stock'>" + existencias + "</td>";
-	      tr_add += cantidades;
+	      tr_add += "<td class='cell100 column30 text-success' id='prodDescription'>" + descrip_only + exento + '</td>';
+	      tr_add += "<td class='cell100 column8 text-success' id='cant_stock'>" + existencias + "</td>";
+	      tr_add += "<td class='cell100 column8 text-success'>"
+          +"<input type='text'  class='form-control decimal2 " + categoria + " cant' "
+          +"id='cant' name='cant' value='' min=0 autocomplete='off' style='width:60px;'></td>";
 	      tr_add += "<td class='cell100 column10 text-success preccs'>" + data.select + "</td>";
-	      tr_add += "<td hidden class='cell100 column10 text-success descp'><input type'text' id='dsd' class='form-control' value='" + data.descripcionp + "' class='txt_box' readonly></td>";
+	      tr_add += "<td hidden class='cell100 column10 text-success descp'>"
+          +"<input type'text' id='dsd' class='form-control' value='" + data.descripcionp + "' class='txt_box' readonly></td>";
 	      tr_add += "<td class='cell100 column10 text-success rank_s'>" + data.select_rank + "</td>";
-	      tr_add += "<td class='cell100 column10 text-success'><input type='hidden'  id='precio_venta_inicial' name='precio_venta_inicial' value='" + data.preciop + "'><input type='hidden'  id='precio_sin_iva' name='precio_sin_iva' value='" + preciop_s_iva + "'><input type='text'  class='form-control decimal' id='precio_venta' name='precio_venta' value='" + data.preciop + "'></td>";
-	      if (tipo_impresion == "CCF") {
-	        tr_add += "<td class='ccell100 column10'>" + "<input type='hidden'  id='subtotal_fin' name='subtotal_fin' value='" + "0.00" + "'>" + "<input type='text'  class='decimal txt_box form-control' id='subtotal_mostrar' name='subtotal_mostrar'  value='" + "0.00" + "'readOnly></td>";
+	      tr_add += "<td class='cell100 column10 text-success'>"
+          +"<input type='hidden'  id='precio_venta_inicial' name='precio_venta_inicial' "
+          +"value='" + data.preciop + "'><input type='hidden'  id='precio_sin_iva' "
+          +"name='precio_sin_iva' value='" + preciop_s_iva + "'>"
+          +"<input type='text'  class='form-control decimal' id='precio_venta' data-percentOverCost='0' "
+          +"name='precio_venta' data-prodCosto='"+prodCosto+"' readonly value='" + data.preciop + "'></td>";
+	      
+	      tr_add += "<td class='ccell100 column10'>" + "<input type='hidden' "
+          +"id='subtotal_fin' name='subtotal_fin' value='" + "0.00" + "'>" 
+          +"<input type='text'  class='decimal txt_box form-control' "
+          +"id='subtotal_mostrar' name='subtotal_mostrar'  value='" + "0.00" + "'readOnly></td>";
 
-	      } else {
-	        tr_add += "<td class='ccell100 column10'>" + "<input type='hidden'  id='subtotal_fin' name='subtotal_fin' value='" + "0.00" + "'>" + "<input type='text'  class='decimal txt_box form-control' id='subtotal_mostrar' name='subtotal_mostrar'  value='" + "0.00" + "'readOnly></td>";
+	      tr_add += '<td class="cell100 column14 Delete text-center">'
+          +'<input id="delprod" type="button" class="btn btn-danger fa"  value="&#xf1f8;">'
+          +'<a data-toggle="modal" href="ver_imagen.php?id_producto='+id_prod
+          +'" data-target="#viewProd" data-refresh="true" class="btn btn-primary btn-sm fa">'
+          +'<i class="fa fa-eye"></i></a>'
 
-	      }
-	      tr_add += '<td class="cell100 column10 Delete text-center"><input id="delprod" type="button" class="btn btn-danger fa"  value="&#xf1f8;"> <a data-toggle="modal" href="ver_imagen.php?id_producto='+id_prod+'"  data-target="#viewProd" data-refresh="true" class="btn btn-primary btnViw fa"><i class="fa fa-eye"></i></a></td>';
+            +'<a data-toggle="modal" id="showUnlockView" href="modals/unlock_percentageUtility.php?fila='+filas+'"'
+            +'" data-target="#viewProd" data-refresh="true" class="btn btn-success btn-sm fa">'
+          +'<i id="iconPercentLock" class="fa fa-lock"></i></a>';
 	      tr_add += '</tr>';
 	      //numero de filas
 	      $("#inventable").prepend(tr_add);
@@ -2004,7 +2029,6 @@ $(document).on('keyup', '.cant', function(evt) {
 });
 $(document).on('select2:close', '.sel_r', function() {
   var tr = $(this).parents("tr");
-  console.log(tr);
   tr.find("#precio_venta").focus();
 });
 
@@ -2040,6 +2064,7 @@ $(document).on('select2:close', '.sel', function(event) {
       a.closest('tr').find('#unidades').val(data.unidad);
       a.closest('tr').find('#precio_sin_iva').val(data.preciop_s_iva);
       a.closest('tr').find(".rank_s").html(data.select_rank);
+      a.closest('tr').find('#precio_venta').data('prodcosto', data.prodCosto);
       fila = a.closest('tr');
       id_producto = fila.find('.id_pps').text();
       existencia = parseFloat(fila.find('#cant_stock').text());
@@ -2134,7 +2159,7 @@ function agregar_ingreso() {
         if (datax.typeinfo == "Success") {
           imprimir_vale(datax.id_mov);
           setInterval("location.reload();", 1000);
-          $('#viewModal').hide();
+          $('#viewProd').modal('hide');
         }
       }
     });
@@ -2353,3 +2378,116 @@ function aplicar() {
   });
 
 };
+
+/** validar la autorización para habilitar la edicion de precio por porcentaje
+ * en base a utilidad sobre el precio de costo
+ */
+function unlockPercentageUtility(btnClicked){
+  let rowTable   = $(btnClicked).data('row-table');
+  let unlockPass = $('#unlockPass').val();
+
+  if(unlockPass != ''){
+    
+    $.ajax({
+      url: 'venta.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        process: 'unlockPercentagePrice',
+        unlockPass: unlockPass
+      },
+      success: function(data) {
+        display_notify(data.typeInfo, data.msg);
+
+        if(data.typeInfo.toLowerCase() == 'success'){
+          //cuando la edicion de precio ha sido habilitada.
+          let href = $('#inventable #' +rowTable).find("#showUnlockView").attr('href');
+          $('#inventable #' +rowTable).find("#showUnlockView").attr('href', href+'&isUnlocked=true');
+          
+          loadProductData_toUnlock(rowTable);
+          $('#lockedView').hide();
+          $('#unlockedView').show();
+
+          $('#inventable #' +rowTable).find("#iconPercentLock").removeClass('fa-lock');
+          $('#inventable #' +rowTable).find("#iconPercentLock").addClass('fa-percent');
+        }
+      },
+      error: function(){
+        swal(
+          'Error interno',
+          'Se originó un error en la respuesta del servidor',
+          'error'
+        );
+      }
+    });
+  }else{
+    $('#unlockPass').focus()
+  }
+  
+}
+
+/**
+ * Load data of sell price, cost and percentage applied in the unlock modal
+ * @param rowTable int 
+ */
+function loadProductData_toUnlock(rowTable){
+  $('#unlock_prodDescription').text(
+    $('#inventable #' +rowTable).find("#prodDescription").text() 
+  );
+  $('#unlock_prodPresent').text(
+    $('#inventable #' +rowTable).find("#dsd").text() 
+  );
+  $('#unlock_prodCost').text(
+    $('#inventable #' +rowTable).find("#precio_venta").data('prodcosto')
+  );
+  $('#unlock_sellPrice').text(
+    $('#inventable #' +rowTable).find("#precio_venta").val()
+  );
+  $('#unlock_percentOverCost').val(
+    $('#inventable #' +rowTable).find("#precio_venta").data('percentOverCost')
+  );
+  recalculatePrice_byPercent();
+}
+
+/**
+ * Recalculate sell price by percentage over product cost on price edit modal,
+ * @void
+ */
+function recalculatePrice_byPercent(){
+  
+  let percent  = parseFloat( $('#unlock_percentOverCost').val() );
+  let prodCost = parseFloat($('#unlock_prodCost').text());
+  let newPrice = 0.00;
+  if(percent < 0){
+    percent = 0;
+    $('#unlock_percentOverCost').val(0);
+  }
+
+  percent  = (isNaN(percent)) ? 0.00 : (percent/100);
+  prodCost = (isNaN(percent)) ? 0.00 : prodCost;
+
+  newPrice = (prodCost + (prodCost*percent));
+
+  $('#unlock_newPrice').text(newPrice.toFixed(4));
+}
+
+/**
+ * Apply the new price established in the editing by percent modal
+ * @param {*} rowTable row ID where update product sell price
+ */
+function applyNewPrice_byPercent(rowTable){
+  
+  $('#inventable #' +rowTable).find("#precio_venta")
+    .data('percentOverCost', $('#unlock_percentOverCost').val());
+
+  $('#inventable #' +rowTable).find("#precio_venta")
+    .val($('#unlock_newPrice').text());
+
+    $('#inventable #' +rowTable).find("#precio_sin_iva").val(
+      (parseFloat($('#unlock_newPrice').text())/1.13)
+    );
+
+  actualiza_subtotal($('#inventable #' +rowTable));
+  display_notify('Success', '¡Precio Actualizado!');
+  $('#viewProd').modal('hide');
+}
