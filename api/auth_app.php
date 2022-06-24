@@ -20,10 +20,22 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 include("_conexion.php");
 
-$query = "SELECT admin, id_usuario, id_empleado, nombre, id_sucursal, usuario
-    FROM usuario
-    WHERE usuario='".$_REQUEST['usuario']."'
-    AND password='".MD5($_REQUEST['pwd'])."'";
+$data = json_decode(file_get_contents("php://input"),true);
+
+
+if(!isset($data['usuario']) || !isset($data['password'])){
+    $response['code'] = 400;
+    $response['message'] = "PETICION INCORRECTA";
+    $response['data'] = $data;
+
+    http_response_code(400);
+    echo json_encode($response,true);
+    die();
+}
+
+$query = "SELECT id_sucursal, id_usuario, nombre, usuario, admin, precios FROM usuario WHERE usuario='".$data['usuario']."' AND password='".MD5($data['password'])."'";
+
+$result = _fetch_all($query);
 
     //Ya que solo es para fines de conteo: 
 $queryParqueados = _query(
@@ -41,6 +53,8 @@ if(sizeof($result) > 0){
 
     $result['admin'] = (int)$result['admin'];
     $result['id_usuario'] = (int)$result['id_usuario'];
+    $result['id_sucursal'] = (int)$result['id_sucursal'];
+    $result['precios'] = (int)$result['precios'];
 
     //Obtener los precios del parqueo de la sucursal activa.
     $preciosParqueo = _fetch_array(_query(
@@ -82,9 +96,18 @@ if(sizeof($result) > 0){
     }*/
     $infoParqueados['total_cobrar'] = number_format($infoParqueados['total_cobrar'], 2);
     $result['infoParqueados'] = $infoParqueados;
+    
+    $response['code'] = 200;
+    $response['message'] = "SESION INICIADA CON EXITO";
+    $response['data'] = $result;
+
     http_response_code(200);
-    echo json_encode($result);
+    echo json_encode($response, true);
 }else{
+    $response['code'] = 400;
+    $response['message'] = "CREDENCIALES INCORRECTAS";
+    $response['data'] = null;
+
     http_response_code(400);
-    echo json_encode(array("estatus"=>"CREDENCIALES INCORRECTAS"));
+    echo json_encode($response,true);
 }

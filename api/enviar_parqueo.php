@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the OpenPyme1.
- * 
- * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
- * 
- * For the full copyright and license information, please refere to LICENSE file
- * that has been distributed with this source code.
- */
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
@@ -36,10 +28,18 @@ if (!empty($data["id_sucursal"]) && !empty($data["placa"]) && !empty($data["fech
     if($success){
         $dataform['id_parqueo'] = _insert_id();
         http_response_code(200);
-        echo json_encode(array( "new" => $dataform ));
+
+        $response['code'] = 200;
+        $response['message'] = "DATOS INSERTADOS";
+        $response['data'] = $dataform;
+
+        echo json_encode($response, true);
     }else{
-        http_response_code(500);
-        echo json_encode(array( "new" => []));
+        $response['code'] = 500;
+        $response['message'] = "DATOS DEL SERVIDOR";
+        $response['data'] = null;
+
+        echo json_encode($response, true);
     }
 	
 } 
@@ -47,7 +47,11 @@ if (!empty($data["id_sucursal"]) && !empty($data["placa"]) && !empty($data["fech
 else{
 
     http_response_code(400);
-     echo json_encode(array( "new" => []));
+    $response['code'] = 400;
+    $response['message'] = "DATOS INCOMPLETOS";
+    $response['data'] = null;
+
+     echo json_encode($response, true);
 
 }
 
