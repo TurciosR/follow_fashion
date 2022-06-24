@@ -5,24 +5,27 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+ini_set("allow_url_fopen", true);
+ini_set("allow_url_include", true);
+
 include_once("_conexion.php");
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 $data = json_decode(file_get_contents("php://input"),true);
 
-if (!empty($data->id_sucursal) && !empty($data->placa) && !empty($data->fecha) && !empty($data->entrada)){
+if (!empty($data["id_sucursal"]) && !empty($data["placa"]) && !empty($data["fecha"]) && !empty($data["entrada"])){
 	
-	$tablename = "prestamo";
+	$tablename = "parqueo";
     $dataform = array(    
-        "id_sucursal" => $data->id_sucursal,
-        "placa" => $data->placa,
-        "fecha" => $data->fecha,
-        "entrada" => $data->entrada,
+        "id_sucursal" => $data["id_sucursal"],
+        "placa" => $data["placa"],
+        "fecha" => $data["fecha"],
+        "entrada" => $data["entrada"],
     );
 
     $success = _insert($tablename, $dataform);
 
-    if($query){
+    if($success){
         $dataform['id_parqueo'] = _insert_id();
         http_response_code(200);
         echo json_encode(array( "new" => $dataform ));

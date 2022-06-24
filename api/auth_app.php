@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 include("_conexion.php");
 
-$query = "SELECT * FROM usuario WHERE usuario='".$_POST['usuario']."' AND password='".$_POST['pwd']."'";
+$query = "SELECT * FROM usuario WHERE usuario='".$_POST['usuario']."' AND password='".MD5($_POST['pwd'])."'";
 
 $result = _fetch_all($query);
 
