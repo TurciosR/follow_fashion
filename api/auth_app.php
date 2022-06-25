@@ -40,16 +40,12 @@ $query = "SELECT id_sucursal, id_usuario, nombre, usuario, admin, precios
 
 $result = _fetch_all($query);
 
-    //Ya que solo es para fines de conteo: 
-$queryParqueados = _query(
-    "SELECT fecha, entrada FROM parqueo WHERE salida IS NULL"
-);
+
 
 $result = _fetch_all($query);
 
 if(sizeof($result) > 0){
-    $infoParqueados['total_parqueados'] = 0;
-    $infoParqueados['total_cobrar']     = 0;
+    
     
 
     $result = $result[0];
@@ -58,35 +54,10 @@ if(sizeof($result) > 0){
     $result['id_usuario'] = (int)$result['id_usuario'];
     $result['id_sucursal'] = (int)$result['id_sucursal'];
     $result['precios'] = (int)$result['precios'];
-
-    //Obtener los precios del parqueo de la sucursal activa.
-    $preciosParqueo = _fetch_array(_query(
-        "SELECT precio_hora,precio_fraccion, minutos_fraccion
-        FROM parqueo_precios
-        WHERE id_sucursal=".$result['id_sucursal']
-        ." AND activo=1"
-    ));
-
-    foreach($queryParqueados AS $key => $rowParked){
-        //calcular el tiempo de parqueo.
-        $inicioParqueo = date('H:i:s', strtotime($rowParked['entrada']));
-        $dateTimeObject1 = date_create($inicioParqueo); 
-        $dateTimeObject2 = date_create(date('H:i:s'));
-        
-        $difference = date_diff($dateTimeObject1, $dateTimeObject2); 
-     
-        $infoParqueados['total_cobrar'] += (
-            ($difference->h * $preciosParqueo['precio_hora'] )
-           +(
-                intval($difference->i / $preciosParqueo['minutos_fraccion'])
-                * $preciosParqueo['precio_fraccion']
-            )
-        );
-        $infoParqueados['total_parqueados'] += 1;
-    }
+    unset($result['id_empleado']);
 
     //unset($result['password']);
-    unset($result['id_empleado']);
+
 
     //$result['permisos'] = _fetch_all("SELECT usuario_modulo.id_usuario, usuario_modulo.id_modulo, modulo.nombre FROM usuario_modulo INNER JOIN modulo on usuario_modulo.id_modulo=modulo.id_modulo WHERE usuario_modulo.id_usuario=".$result['id_usuario']);
 
@@ -97,8 +68,6 @@ if(sizeof($result) > 0){
         $result['permisos'][$key]['id_usuario'] = (int)  $result['permisos'][$key]['id_usuario'];
         $result['permisos'][$key]['id_modulo'] = (int)  $result['permisos'][$key]['id_modulo'];
     }*/
-    $infoParqueados['total_cobrar'] = number_format($infoParqueados['total_cobrar'], 2);
-    $result['infoParqueados'] = $infoParqueados;
     
     $response['code'] = 200;
     $response['message'] = "SESION INICIADA CON EXITO";

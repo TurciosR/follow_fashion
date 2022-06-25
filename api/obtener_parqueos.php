@@ -19,9 +19,9 @@ if(sizeof($parqueos) > 0){
 
     echo json_encode($response, true);
 }else{
-     $response['code'] = 500;
-    $response['message'] = "DATOS DEL SERVIDOR";
-    $response['data'] = null;
+     $response['code'] = 200;
+    $response['message'] = "NO SE ENCONTRARON DATOS";
+    $response['data'] = [];
 
     echo json_encode($response, true);
 }
