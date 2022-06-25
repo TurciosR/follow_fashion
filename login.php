@@ -80,7 +80,7 @@ include_once "header.php";
 				</p>
 				<div>
 					<center>
-				 		<img alt="image" class="img-responsive" src="img/logo_sys.png" width="300px" height="200px" style="margin-top: -3%;">
+				 		<img alt="image" class="img-responsive" src="img/62b1ee1c1c090_follow_logo.png" width="300px" height="200px" style="margin-top: -3%;">
 					</center>
 				</div>
 			</div>

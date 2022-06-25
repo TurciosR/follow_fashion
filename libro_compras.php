@@ -66,7 +66,7 @@ $direccion = utf8_decode(Mayu(utf8_decode(trim($row_emp["direccion"]))));
     {
       $existenas = "CANTIDAD: $min";
     }
-    //$logo = "img/logo_sys.png";
+    //$logo = "img/62b1ee1c1c090_follow_logo.png";
     $pdf->AddPage();
     $pdf->SetFont('Arial','',10);
     //$pdf->Image($logo,8,4,30,25);

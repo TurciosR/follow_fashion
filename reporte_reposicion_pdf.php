@@ -20,7 +20,7 @@ $nombre_a = utf8_decode(Mayu(utf8_decode(trim($row_emp["descripcion"]))));
 //$direccion = Mayu(utf8_decode($row_emp["direccion_empresa"]));
 $direccion = utf8_decode(Mayu(utf8_decode(trim($row_emp["direccion"]))));
 
-$logo = "img/logo_sys.png";
+$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = $nombre_a;
 $fech = date("d/m/Y");

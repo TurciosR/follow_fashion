@@ -51,7 +51,7 @@ $fini = ($_REQUEST["fini"]);
 $fin = ($_REQUEST["fecha"]);
 $fini1 = $_REQUEST["fini"];
 $fin1 = $_REQUEST["fecha"];
-$logo = "img/logo_sys.png";
+$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = $nombre_a;
 $titulo = "REPORTE DE COSTOS UTILIDAD";

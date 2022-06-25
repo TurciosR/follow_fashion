@@ -36,7 +36,7 @@ class PDF extends FPDF
   {
 
     // Logo
-    $this->Image('img/logo_sys.png', 10, 10, 33);
+    $this->Image('img/62b1ee1c1c090_follow_logo.png', 10, 10, 33);
     $this->AddFont('latin','','latin.php');
     $this->SetFont('latin', '', 10);
     // Movernos a la derecha

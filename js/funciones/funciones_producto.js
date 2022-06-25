@@ -75,8 +75,8 @@ function generar() {
   dataTable = $('#editable2').DataTable({
     "pageLength": 50,
     "order": [
-      [0, 'asc'],
-      [1, 'asc']
+      [0, 'desc'],
+      [1, 'desc']
     ],
     "processing": true,
     "serverSide": true,
@@ -85,7 +85,11 @@ function generar() {
 
       error: function() { // error handling
         //$(".editable2-error").html("");
-        $("#editable2").append('<tbody class="editable2_grid-error"><tr><th colspan="3">No se encontró información segun busqueda </th></tr></tbody>');
+        $("#editable2").append(
+          '<tbody class="editable2_grid-error"><tr>'
+            +'<th colspan="3">No se encontró información segun busqueda </th>'
+            +'</tr></tbody>'
+        );
         $("#editable2_processing").css("display", "none");
         $(".editable2-error").remove();
       }
@@ -101,7 +105,7 @@ function generar() {
     }]
   });
 
-  dataTable.ajax.reload()
+  dataTable.ajax.reload();
 }
 
 $(document).on('click', '#submit1', function(event) {

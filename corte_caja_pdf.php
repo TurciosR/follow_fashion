@@ -52,7 +52,7 @@ $fini = $fecha_corte;
 $fin = ($_REQUEST["ffin"]);
 $fini1 = $_REQUEST["fini"];
 $fin1 = $_REQUEST["ffin"];
-$logo = "img/logo_sys.png";
+$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = "CORTE CAJA";
 $empresa = "";

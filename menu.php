@@ -1,8 +1,9 @@
 <?php
 include_once "_core.php";
-$query = _query("SELECT logo_empresa FROM configuracion WHERE id_configuracion='1'");
+$id_sucursal = $_SESSION['id_sucursal'];
+$query = _query("SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal");
 $result = _fetch_array($query);
-$url=$result["logo_empresa"];
+$url=$result["logo"];
 ?>
 <div id="wrapper">
   <nav class="navbar-default navbar-static-side" role="navigation">

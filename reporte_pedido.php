@@ -28,7 +28,7 @@ $telefonos="TEL. ".$tel1;
     $id_sucursal = $_REQUEST["id_sucursal"];
     $min = $_REQUEST["min"];
     $max = $_REQUEST["max"];
-    $logo = "img/logo_sys.png";
+    $logo = "img/62b1ee1c1c090_follow_logo.png";
     $impress = date("d/m/Y");
     $fech =date("d")." DE ".utf8_decode(Mayu(utf8_decode(meses(date("m")))))." DEL ".date("Y");
     $pdf->AddPage();

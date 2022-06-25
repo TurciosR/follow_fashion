@@ -1,10 +1,11 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
-      <li class="nav-header">
-        <div class="dropdown profile-element"> <span>
-          <img alt="image" class="img-responsive" src="img/logo_sys.png" width="180px" style="margin-left: -3%;">
-        </span>
+      <li class="nav-header" style="background: #FFFFFF;">
+        <div class="dropdown profile-element">
+          <span>
+            <img alt="image" class="img-responsive" src="img/62b1ee1c1c090_follow_logo.png" width="180px" style="margin-left: -3%;">
+          </span>
       </div>
       <div class="logo-element">
         PB

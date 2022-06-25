@@ -28,7 +28,7 @@ $direccion = $row_emp['direccion'];
 $telefonos="TEL. ".$tel1." y ".$tel2;
 
     $id_sucursal = $_REQUEST["id_sucursal"];
-    $logo = "img/logo_sys.png";
+    $logo = "img/62b1ee1c1c090_follow_logo.png";
     $impress = "Impreso: ".date("d/m/Y");
     $titulo = "REPORTE DE PEDIDOS";
     $fech =date("d")." DE ".utf8_decode(Mayu(utf8_decode(meses(date("m")))))." DEL ".date("Y");

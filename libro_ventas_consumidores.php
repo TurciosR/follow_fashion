@@ -26,7 +26,7 @@ $direccion = utf8_decode(Mayu(utf8_decode(trim($row_emp["direccion"]))));
     $fin = ($_REQUEST["ffin"]);
     $fini1 = $_REQUEST["fini"];
     $fin1 = $_REQUEST["ffin"];
-    $logo = "img/logo_sys.png";
+    $logo = "img/62b1ee1c1c090_follow_logo.png";
 
     $title = $nombre_a;
     $titulo = "LIBRO DE VENTAS A CONSUMIDORES";

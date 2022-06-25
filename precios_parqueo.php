@@ -17,7 +17,7 @@ include ("_core.php");
 function init(){
 // Page setup
 $_PAGE = array ();
-$title = "Registros del parqueo";
+$title = "Actualizar precios del parqueo";
 $_PAGE ['title'] = $title;
 $_PAGE ['links'] = null;
 $_PAGE ['links'] .= '<link href="css/bootstrap.min.css" rel="stylesheet">';
@@ -28,7 +28,6 @@ $_PAGE ['links'] .= '<link href="css/plugins/jqGrid/ui.jqgrid.css" rel="styleshe
 $_PAGE ['links'] .= '<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">';
 $_PAGE ['links'] .= '<link href="css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet">';
 $_PAGE ['links'] .= '<link href="css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">';
-$_PAGE ['links'] .= '<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">';
 $_PAGE ['links'] .= '<link href="css/animate.css" rel="stylesheet">';
 $_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
 include_once "header.php";
@@ -58,10 +57,9 @@ $links=permission_usr($id_user,$filename);
                     $filename='admin_parqueo.php';
                     $link=permission_usr($id_user,$filename);
                     if ($link!='NOT' || $admin=='1' )
-                    echo "<a href='precios_parqueo.php' class='btn btn-primary' role='button'>
-                        <i class='fa fa-usd icon-large'></i> Precios de parqueo</a>";
-                    echo "</div>";
-
+                    //-----------------------------
+                    $preciosParqueo = loadPrices();
+                    //-----------------------------
                     ?>
                     <div class="ibox-content">
                         <!--load datables estructure html-->
@@ -70,62 +68,42 @@ $links=permission_usr($id_user,$filename);
                         </header>
                         <section>
                         <div class="row"style="font-size: 1.1em;">
-                            <div class="col-md-2">
-                                  <label >Desde</label>
-                                  <input type="text" class="form-control datepick"
-                                  style="width: 10em; display: inline-block"
-                                    id="fechaInicio" value="<?php echo date('Y-m-d');?>">
-                              </div><!--col-md-2-->
 
-                                <div class="col-md-2">
-                                <div class="form-group">
-                                  <label>Hasta</label>
-                                  <input type="text" class="form-control datepick"
-                                    id="fechaFin" value="<?php echo date('Y-m-d');?>"
-                                    style="width: 10em; display: inline-block">
+                            <div class="col-lg-3">
+                                <div class="form-group has-info single-line">
+                                    <label class="control-label" for="Nombre">Precio por fracción</label>
+                                    <input type="number" step="0.25" placeholder="$"
+                                    class="form-control input-precio-parqueo" id="precio_fraccion" name="precio_fraccion"
+                                    value="<?php echo $preciosParqueo['precio_fraccion'];?>" autocomplete="off">
                                 </div>
-                            </div><!--col-md-2-->
 
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                  <button id="btn_reloadTable" class="btn btn-primary">
-                                    <i class="fa fa-reload"></i> Actualizar datos
+                                <div class="form-group has-info single-line">
+                                    <label class="control-label" for="Nombre">Minutos por fracción</label>
+                                    <input type="number" step="1" min="1" max=59 placeholder=""
+                                    class="form-control input-precio-parqueo" id="minutos_fraccion" name="minutos_fraccion"
+                                    value="<?php echo $preciosParqueo['minutos_fraccion'];?>" autocomplete="off">
+                                </div>
+                            </div><!--col-lg-3-->
+
+
+                            <div class="col-lg-3">
+                                <div class="form-group has-info single-line">
+                                    <label class="control-label" for="Nombre">Precio por 1 Hora</label>
+                                    <input type="number" step="1.00" min="0" placeholder="$"
+                                    class="form-control input-precio-parqueo" id="precio_hora" name="precio_hora"
+                                    value="<?php echo $preciosParqueo['precio_hora'];?>" autocomplete="off">
+                                </div>
+
+                                <div class="form-group text-center">
+                                  <button id="btn_updatePrices" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Guardar
                                   </button>
                                 </div>
-                            </div><!--col-md-2-->
+                            </div><!--col-lg-3-->
 
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                  <label>Total parqueados: <span id="totalParqueados"></span></label>
-                                  <label style="display: block;">En parqueo: <span id="enParqueo"></span></label>
-                                </div>
-                            </div><!--col-md-2-->
-
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                  <label>Total cobrado: $<span id="totalCobrado"></span></label>
-                                  <label style="display: block;">Por cobrar: $<span id="porCobrar"></span></label>
-                                </div>
-                            </div><!--col-md-2-->
                         </div><!--Fin Row-->
-                            
-                            <table class="table table-striped table-bordered table-hover" id="editable">
-                                <thead>
-                                    <tr>
-                                        <th class="col-lg-1">Id </th>
-                                        <th class="col-lg-1">Fecha</th>
-                                        <th class="col-lg-3">Numero doc</th>
-                                        <th class="col-lg-2">Placa</th>
-                                        <th class="col-lg-2">Hora Entrada</th>
-                                        <th class="col-lg-2">Hora Salida</th>
-                                        <th class="col-lg-2">Cobro $</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bodyMainTable">
-                                    
-                                </tbody>
-                            </table>
-                            <input type="hidden" name="autosave" id="autosave" value="false-0">
+
+
                         </section>
                         <!--Show Modal Popups View & Delete -->
                         <div class='modal fade' id='viewModal' tabindex='-1'
@@ -212,12 +190,50 @@ function getResumeStats(){
     echo json_encode($infoParqueos);
 }
 
+function loadPrices(){
+    //Obtener los precios del parqueo de la sucursal activa.
+    $id_sucursal = $_SESSION['id_sucursal'];
+    $preciosParqueo = _fetch_array(_query(
+        "SELECT precio_hora,precio_fraccion, minutos_fraccion
+        FROM parqueo_precios
+        WHERE id_sucursal=".$id_sucursal
+        ." AND activo=1"
+    ));
+    return $preciosParqueo;
+}
+
+function updatePrices(){
+    $id_sucursal     = $_SESSION['id_sucursal'];
+    $hourPrice       = $_REQUEST['hourPrice'];
+    $fractionPrice   = $_REQUEST['fractionPrice'];
+    $fractionMinutes = $_REQUEST['fractionMinutes'];
+    $data = [];
+    $data['status'] = 'Error';
+    $data['msg']    = 'No se pudo actualizar los precios.';
+
+    $formdata = array(
+        'precio_hora' => $hourPrice,
+        'precio_fraccion' => $fractionPrice,
+        'minutos_fraccion'=> $fractionMinutes
+    );
+    $updatedPrices = _update(
+        "parqueo_precios",
+        $formdata,
+        "id_sucursal=$id_sucursal"
+    );
+    if($updatedPrices){
+        $data['status'] = 'Success';
+        $data['msg']    = 'Precios actualizados correctamente.';
+    }
+    header("ContentType: application/json");
+    echo json_encode($data);
+}
 
 ///----------------------------------
 if(isset($_REQUEST['action'])){
     switch($_REQUEST['action']){
-        case 'resumeStats':
-            getResumeStats();
+        case 'update_parkingPrices':
+            updatePrices();
             break;
     }
 }else{
