@@ -3,7 +3,7 @@
 include_once("_conexion.php");
 
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8; mimetype=application/json");
+header("Content-Type: application/json; charset=UTF-8");
 
 // agregamos el total de horas transcurridas, concatenando la fecha de hoy con la hora de entrada
 // y haciendo la resta entre la hora actual y la de entrada

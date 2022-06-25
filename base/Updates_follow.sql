@@ -22,3 +22,6 @@ CREATE TABLE `open_2cajas`.`parqueo_precios` (
 
 INSERT INTO `parqueo_precios` (`id_precio_parqueo`, `precio_hora`, `precio_fraccion`, `deleted`)
     VALUES (NULL, '1.00', '0.25', NULL);
+
+--Agregar campo de correlativo para los que se estarán emitiendo en el parqueo
+ALTER TABLE `correlativo` ADD `tik_parqueo` INT NOT NULL COMMENT 'Correlativo para los tickets emitidos en parqueo' AFTER `con`;

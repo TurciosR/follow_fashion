@@ -14,13 +14,31 @@ ini_set('display_errors', 1);
 $data = json_decode(file_get_contents("php://input"),true);
 
 if (!empty($data["id_sucursal"]) && !empty($data["placa"]) && !empty($data["fecha"]) && !empty($data["entrada"])){
-	
+	//Leer correlativo para incrementarlo.
+    //EL CORRELATIVO PTIK, obtiene el ultimo en la base de datos. y le suma 1. 
+    //ese nuevo valor, es el que se va a usar en el ticket y a actualizar en la 
+    //tabla de correlativos.
+
+    $correlativo = _fetch_array(_query(
+      "SELECT tik_parqueo FROM correlativo WHERE id_sucursal=$data[id_sucursal]"
+    ));
+    //sumamos el correlativo del ticket y a partir de aqui, usaremos este valor.
+    $correlativo = ($correlativo['tik_parqueo'] + 1);
+    $num_doc     = str_pad($correlativo, 10, "0", STR_PAD_LEFT)."_PTIK";
+
 	$tablename = "parqueo";
     $dataform = array(    
         "id_sucursal" => $data["id_sucursal"],
-        "placa" => $data["placa"],
-        "fecha" => $data["fecha"],
-        "entrada" => $data["entrada"],
+        "placa"       => $data["placa"],
+        "fecha"       => $data["fecha"],
+        "entrada"     => $data["entrada"],
+        "numero_doc"  => $num_doc
+    );
+
+    _update(
+        'correlativo',
+        ['tik_parqueo' => $correlativo],
+        "id_sucursal=$data[id_sucursal]"
     );
 
     $success = _insert($tablename, $dataform);

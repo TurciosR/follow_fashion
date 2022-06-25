@@ -1,8 +1,23 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+ini_set('display_errors', 1);
+error_reporting( E_ERROR | E_PARSE ); 
+
 include ("_core.php");
+
+function init(){
 // Page setup
 $_PAGE = array ();
-$title = "Administrar Empleados";
+$title = "Registros del parqueo";
 $_PAGE ['title'] = $title;
 $_PAGE ['links'] = null;
 $_PAGE ['links'] .= '<link href="css/bootstrap.min.css" rel="stylesheet">';
@@ -19,7 +34,7 @@ include_once "header.php";
 include_once "main_menu.php";
 
 $id_sucursal = $_SESSION["id_sucursal"];
-$result=_query("SELECT e.*, te.descripcion FROM empleado AS e, tipo_empleado AS te WHERE e.id_tipo_empleado=te.id_tipo_empleado AND id_sucursal='$id_sucursal' ORDER BY e.nombre ASC, e.apellido ASC");
+$today = date('Y-m-d');
 
 //permiso del script
 $id_user=$_SESSION["id_usuario"];
@@ -39,10 +54,11 @@ $links=permission_usr($id_user,$filename);
                 if ($links!='NOT' || $admin=='1' ) {
                     echo "<div class='ibox-title'>";
                     //permiso del script
-                    $filename='agregar_tipo_empleado.php';
+                    $filename='admin_parqueo.php';
                     $link=permission_usr($id_user,$filename);
                     if ($link!='NOT' || $admin=='1' )
-                    echo "<a href='agregar_empleado.php' class='btn btn-primary' role='button'><i class='fa fa-plus icon-large'></i> Agregar Empleado</a>";
+                    echo "<a href='admin_precios_parqueo.php' class='btn btn-primary' role='button'>
+                        <i class='fa fa-usd icon-large'></i> Precios de parqueo</a>";
                     echo "</div>";
 
                     ?>
@@ -52,64 +68,71 @@ $links=permission_usr($id_user,$filename);
                             <h4><?php echo $title; ?></h4>
                         </header>
                         <section>
-                            <table class="table table-striped table-bordered table-hover"id="editable">
+                        <div class="row">
+                            <div class="col-md-2">
+                                  <label >Desde</label>
+                                  <input type="text" class="form-control datepick"
+                                  style="width: 10em; display: inline-block"
+                                    id="fechaInicio" value="<?php echo date('Y-m-d');?>">
+                              </div><!--col-md-2-->
+
+                                <div class="col-md-2">
+                                <div class="form-group">
+                                  <label>Hasta</label>
+                                  <input type="text" class="form-control datepick"
+                                    id="fechaFin" value="<?php echo date('Y-m-d');?>"
+                                    style="width: 10em; display: inline-block">
+                                </div>
+                            </div><!--col-md-2-->
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                  <button id="btn_reloadTable" class="btn btn-primary">
+                                    <i class="fa fa-reload"></i> Actualizar datos
+                                  </button>
+                                </div>
+                            </div><!--col-md-2-->
+                        </div><!--Fin Row-->
+                            
+                            <table class="table table-striped table-bordered table-hover" id="editable">
                                 <thead>
                                     <tr>
                                         <th class="col-lg-1">Id </th>
-                                        <th class="col-lg-4">Nombre</th>
-                                        <th class="col-lg-2">Tipo</th>
-                                        <th class="col-lg-2">Telefonos</th>
-                                        <th class="col-lg-2">Correo</th>
-                                        <th class="col-lg-1">Acci&oacute;n</th>
+                                        <th class="col-lg-1">Fecha</th>
+                                        <th class="col-lg-3">Numero doc</th>
+                                        <th class="col-lg-2">Placa</th>
+                                        <th class="col-lg-2">Hora Entrada</th>
+                                        <th class="col-lg-2">Hora Salida</th>
+                                        <th class="col-lg-2">Cobro $</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="bodyMainTable">
                                     <?php
-                                    while($row=_fetch_array($result))
-                                    {
-                                        $contacto=$row['nombre']."  ".$row['apellido'];
-                                        $telefonos=$row['telefono1']." -- ".$row['telefono2'];
-                                        $salariobase=$row['salariobase'];
-                                        $correo=$row['email'];
-                                        $tipo=$row['descripcion'];
-                                        echo "<tr>";
-                                        echo"<td>".$row['id_empleado']."</td>
-                                        <td>".$contacto."</td>
-                                        <td>".$tipo."</td>
-                                        <td>".$telefonos."</td>
-                                        <td>".$correo."</td>";
-                                        echo"<td><div class=\"btn-group\">
-                                        <a href=\"#\" data-toggle=\"dropdown\" class=\"btn btn-primary dropdown-toggle\"><i class=\"fa fa-user icon-white\"></i> Menu<span class=\"caret\"></span></a>
-                                        <ul class=\"dropdown-menu dropdown-primary\">";
-                                        $filename='editar_empleado.php';
-                                        $link=permission_usr($id_user,$filename);
-                                        if ($link!='NOT' || $admin=='1' )
-                                        echo "<li><a href=\"editar_empleado.php?id_empleado=".$row['id_empleado']."\"><i class=\"fa fa-pencil\"></i> Editar</a></li>";
-                                        $filename='borrar_empleado.php';
-                                        $link=permission_usr($id_user,$filename);
-                                        if ($link!='NOT' || $admin=='1' )
-                                        echo "<li><a data-toggle='modal' href='borrar_empleado.php?id_empleado=" .  $row ['id_empleado']."&process=formDelete"."' data-target='#deleteModal' data-refresh='true'><i class=\"fa fa-eraser\"></i> Eliminar</a></li>";
-                                        $filename='ver_empleado.php';
-                                        $link=permission_usr($id_user,$filename);
-                                        if ($link!='NOT' || $admin=='1' )
-                                        echo "<li><a data-toggle='modal' href='ver_empleado.php?id_empleado=".$row['id_empleado']."' data-target='#viewModal' data-refresh='true'><i class=\"fa fa-search\"></i> Ver Detalle</a></li>";
-                                        echo "</ul>
-                                        </div>
-                                        </td>
-                                        </tr>";
-                                    }
+                                   
+                                        echo '<tr>';
+                                        echo "<td>$row[id_parqueo]</td>";
+                                        echo "<td>$row[fecha]</td>";
+                                        echo "<td>$row[numero_doc]</td>";
+                                        echo "<td>$row[placa]</td>";
+                                        echo "<td>$entrada</td>";
+                                        echo "<td>$salida</td>";
+                                        echo "<td class='text-right'>$".number_format($total, 2)."</td>";
+                                        echo '</tr>';
+                                    
                                     ?>
                                 </tbody>
                             </table>
                             <input type="hidden" name="autosave" id="autosave" value="false-0">
                         </section>
                         <!--Show Modal Popups View & Delete -->
-                        <div class='modal fade' id='viewModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+                        <div class='modal fade' id='viewModal' tabindex='-1'
+                            role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
                             <div class='modal-dialog modal-md'>
                                 <div class='modal-content modal-md'></div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
-                        <div class='modal fade' id='deleteModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+                        <div class='modal fade' id='deleteModal' tabindex='-1'
+                            role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
                             <div class='modal-dialog modal-sm'>
                                 <div class='modal-content modal-sm'></div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
@@ -121,10 +144,80 @@ $links=permission_usr($id_user,$filename);
         </div><!--div class='wrapper wrapper-content  animated fadeInRight'-->
         <?php
         include("footer.php");
-        echo" <script type='text/javascript' src='js/funciones/funciones_empleado.js'></script>";
+        echo" <script type='text/javascript' src='js/funciones/funciones_parqueo.js'></script>";
     } //permiso del script
     else {
         echo "<br><br><div class='alert alert-warning'>No tiene permiso para este modulo.</div></div></div></div></div>";
         include_once ("footer.php");
     }
-    ?>
+}
+
+function loadTable(){
+    $id_sucursal = $_SESSION['id_sucursal'];
+    $today = date('Y-m-d');
+    $data = [];
+    $fechaInicio = $_REQUEST['fInicio'];
+    $fechaFin = $_REQUEST['fFin'];
+
+    $queryParqueos=_query(
+        "SELECT * FROM parqueo
+        WHERE id_sucursal=$id_sucursal
+        AND fecha BETWEEN '$fechaInicio' AND '$fechaFin'
+        ORDER BY id_parqueo DESC"
+    );
+
+    $preciosParqueo = _fetch_array(_query(
+        "SELECT precio_hora,precio_fraccion, minutos_fraccion
+        FROM parqueo_precios
+        WHERE id_sucursal=".$id_sucursal
+        ." AND activo=1"
+    ));
+
+    $counter = 0;
+    while($row=_fetch_array($queryParqueos))
+    {
+        $entrada = date('h:i A', strtotime($row['entrada']));
+        $salida  = ((!$row['salida'] == '') ? $row['salida'] : '<b>En parqueo</b>');
+        $total   = $row['total'];
+         //calcular el tiempo de parqueo.
+        $inicioParqueo = date('H:i:s', strtotime($row['entrada']));
+        $dateTimeObject1 = date_create($inicioParqueo); 
+        $dateTimeObject2 = date_create(date('H:i:s'));
+        
+        $difference = date_diff($dateTimeObject1, $dateTimeObject2); 
+        if($row['salida'] == ''){
+            $total = (
+                ($difference->h * $preciosParqueo['precio_hora'] )
+                +(
+                    intval($difference->i / $preciosParqueo['minutos_fraccion'])
+                    * $preciosParqueo['precio_fraccion']
+                )
+            );
+        }else{
+            $salida = date('h:i A', strtotime($row['salida']));
+        }
+
+        
+        $data[$counter]['fecha']   = $row['fecha'];
+        $data[$counter]['placa']   = $row['placa'];
+        $data[$counter]['entrada'] = $entrada;
+        $data[$counter]['salida']  = $salida;
+        $data[$counter]['numero_doc']  = $row['numero_doc'];
+        $data[$counter]['id_parqueo']  = $row['id_parqueo'];
+        $data[$counter]['total_cobro'] = number_format($total, 2);
+        $counter += 1;
+    }
+    header('ContentType: application/json');
+    echo json_encode($data);
+}
+///----------------------------------
+if(isset($_REQUEST['action'])){
+    switch($_REQUEST['action']){
+        case 'loadTable':
+            loadTable();
+            break;
+    }
+}else{
+    init();
+}
+?>

@@ -33,7 +33,10 @@ if(!isset($data['usuario']) || !isset($data['password'])){
     die();
 }
 
-$query = "SELECT id_sucursal, id_usuario, nombre, usuario, admin, precios FROM usuario WHERE usuario='".$data['usuario']."' AND password='".MD5($data['password'])."'";
+$query = "SELECT id_sucursal, id_usuario, nombre, usuario, admin, precios
+    FROM usuario
+    WHERE usuario='".$data['usuario']."'
+    AND password='".MD5($data['password'])."'";
 
 $result = _fetch_all($query);
 
