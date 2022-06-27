@@ -193,7 +193,7 @@ function getResumeStats(){
                 $infoParqueos['total_cobrar'] += (
                     ($difference->h * $preciosParqueo['precio_hora'] )
                     +(
-                        intval($difference->i / $preciosParqueo['minutos_fraccion'])
+                        (1+intval($difference->i / $preciosParqueo['minutos_fraccion']))
                         * $preciosParqueo['precio_fraccion']
                     )
                 );

@@ -47,7 +47,7 @@ if (!empty($data["id_parqueo"]) ){
     //Calcular diferencias
     $difference = date_diff($dateTimeObject1, $dateTimeObject2);
     $horas      = $difference->h;
-    $fracciones =  intval($difference->i / $preciosParqueo['minutos_fraccion']); 
+    $fracciones =  (1+(intval($difference->i / $preciosParqueo['minutos_fraccion']))); 
 
     //Calcular total
     $total = (

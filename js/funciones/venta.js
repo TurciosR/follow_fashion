@@ -333,11 +333,16 @@ $(document).ready(function() {
 
 // newPrice by Utility Percentage updater (unlocked Modal)
 $(document).on('keyup change', '#unlock_percentOverCost', function(event) {
-  recalculatePrice_byPercent();
+  if (event.keyCode == 13){
+    applyNewPrice_byPercent();
+  }else{
+    recalculatePrice_byPercent();
+  }
+  
 });
 // newPrice by Utility Percentage updater (unlocked Modal)
 $(document).on('click', '#btn_unlockPercentApply', function(event) {
-  applyNewPrice_byPercent($(this).data('row-table'));
+  applyNewPrice_byPercent();
 });
 
 $(document).on('hidden.bs.modal', function(e) {
@@ -2382,8 +2387,8 @@ function aplicar() {
 /** validar la autorización para habilitar la edicion de precio por porcentaje
  * en base a utilidad sobre el precio de costo
  */
-function unlockPercentageUtility(btnClicked){
-  let rowTable   = $(btnClicked).data('row-table');
+function unlockPercentageUtility(){
+  let rowTable = $('#btn_unlockPercentApply').data('row-table');
   let unlockPass = $('#unlockPass').val();
 
   if(unlockPass != ''){
@@ -2404,12 +2409,13 @@ function unlockPercentageUtility(btnClicked){
           let href = $('#inventable #' +rowTable).find("#showUnlockView").attr('href');
           $('#inventable #' +rowTable).find("#showUnlockView").attr('href', href+'&isUnlocked=true');
           
-          loadProductData_toUnlock(rowTable);
+          loadProductData_toUnlock();
           $('#lockedView').hide();
           $('#unlockedView').show();
 
           $('#inventable #' +rowTable).find("#iconPercentLock").removeClass('fa-lock');
           $('#inventable #' +rowTable).find("#iconPercentLock").addClass('fa-percent');
+          $('#unlock_percentOverCost').focus();
         }
       },
       error: function(){
@@ -2421,16 +2427,17 @@ function unlockPercentageUtility(btnClicked){
       }
     });
   }else{
-    $('#unlockPass').focus()
+      $('#unlockPass').focus();
   }
   
 }
 
 /**
  * Load data of sell price, cost and percentage applied in the unlock modal
- * @param rowTable int 
  */
-function loadProductData_toUnlock(rowTable){
+function loadProductData_toUnlock(){
+  let rowTable = $('#btn_unlockPercentApply').data('row-table');
+  
   $('#unlock_prodDescription').text(
     $('#inventable #' +rowTable).find("#prodDescription").text() 
   );
@@ -2441,11 +2448,12 @@ function loadProductData_toUnlock(rowTable){
     $('#inventable #' +rowTable).find("#precio_venta").data('prodcosto')
   );
   $('#unlock_sellPrice').text(
-    $('#inventable #' +rowTable).find("#precio_venta").val()
+    $('#inventable #' +rowTable).find(".sel_r option:selected").val()
   );
   $('#unlock_percentOverCost').val(
     $('#inventable #' +rowTable).find("#precio_venta").data('percentOverCost')
   );
+  
   recalculatePrice_byPercent();
 }
 
@@ -2456,6 +2464,7 @@ function loadProductData_toUnlock(rowTable){
 function recalculatePrice_byPercent(){
   
   let percent  = parseFloat( $('#unlock_percentOverCost').val() );
+  let sellPrice = parseFloat($('#unlock_sellPrice').text());
   let prodCost = parseFloat($('#unlock_prodCost').text());
   let newPrice = 0.00;
   if(percent < 0){
@@ -2463,20 +2472,29 @@ function recalculatePrice_byPercent(){
     $('#unlock_percentOverCost').val(0);
   }
 
-  percent  = (isNaN(percent)) ? 0.00 : (percent/100);
-  prodCost = (isNaN(percent)) ? 0.00 : prodCost;
+  percent   = (isNaN(percent)) ? 0.00 : (percent/100);
+  sellPrice = (isNaN(sellPrice)) ? 0.00 : sellPrice;
+  prodCost  = (isNaN(prodCost)) ? 0.00 : prodCost;
 
-  newPrice = (prodCost + (prodCost*percent));
+  newPrice = round((sellPrice - (sellPrice*percent)), 4);
+
+  if(newPrice < prodCost){
+    $('#unlock_newPrice').addClass('text-danger');
+    $('#unlock_newPrice').addClass('font-bold');
+  }else{
+    $('#unlock_newPrice').removeClass('text-danger');
+    $('#unlock_newPrice').removeClass('font-bold');
+  }
 
   $('#unlock_newPrice').text(newPrice.toFixed(4));
 }
 
 /**
  * Apply the new price established in the editing by percent modal
- * @param {*} rowTable row ID where update product sell price
  */
-function applyNewPrice_byPercent(rowTable){
-  
+function applyNewPrice_byPercent(){
+  let rowTable = $('#btn_unlockPercentApply').data('row-table');
+
   $('#inventable #' +rowTable).find("#precio_venta")
     .data('percentOverCost', $('#unlock_percentOverCost').val());
 

@@ -29,7 +29,7 @@
             <div class="row" id="lockedView" <?php echo ($isUnlocked) ? 'hidden' : ''; ?>>
                 <div class="col-md-12 text-center">
                     <label>Ingrese su clave para habilitar la edición del precio de venta
-                        en base a un porcentaje de utilidad </label>
+                        en base a un porcentaje de descuento </label>
                     <input type="password" id="unlockPass" class="form-control">
                     <button id="btn_unlockPercentage" class="btn btn-primary"
                     style="margin-top: 1.3em;" data-row-table="<?php echo $_REQUEST['fila']; ?>">
@@ -46,16 +46,16 @@
                     <label id="unlock_prodPresentation">Presentacion de Prueba</label>
                     <table class="table table-hover table-bordered">
                         <thead>
-                            <th>Precio venta</th>
                             <th>Costo</th>
+                            <th>Precio venta</th>
                             <th>Porcentaje </th>
                             <th>Nuevo precio</th>
                         </thead>
                         <tbody>
-                            <td>$<span id="unlock_sellPrice">0.00</span></td>
                             <td>$<span id="unlock_prodCost">0.00</span></td>
+                            <td>$<span id="unlock_sellPrice">0.00</span></td>
                             <td>
-                                <input type="number" step="1.00" min="0" value="0"
+                            —<input type="number" step="1.00" min="0" value="0"
                                 style="width: 5em; border:none; text-align:right;"
                                 id="unlock_percentOverCost">%
                             </td>
@@ -80,9 +80,8 @@
 /**@abstract Run this code for automatic load data when init modal*/
 $(document).ready(function() {
     if($('#isUnlocked').text() == "true"){
-        loadProductData_toUnlock(
-            $('#btn_unlockPercentage').data('row-table')
-        );
+        loadProductData_toUnlock();
+        $('#unlock_percentOverCost').focus();
     }else{
         $('#unlockPass').focus();
     }
@@ -92,7 +91,16 @@ $(document).ready(function() {
  * create listener event for unlock editor price based on cost
  */
 $('#btn_unlockPercentage').on('click', function(e) {
-  unlockPercentageUtility(this);
+  unlockPercentageUtility();
+});
+
+/**
+ * create listener event for unlock editor price based on cost
+ */
+$('#unlockPass').keyup(function(event) {
+    if (event.keyCode == 13){
+		unlockPercentageUtility();
+    }
 });
 
 </script>
