@@ -949,9 +949,14 @@ let printBcode=()=>{
     let id_producto = $("#viewModal .modal-body #id_prodd").val()
     let qty         = $("#viewModal .modal-body #qty").val()
     qty             =  isNaN(qty)?  1: qty==""? 1: parseInt(qty);
+    let precio = $("#viewModal .modal-body .sel_r").val();
+    let presentacion = $("#viewModal .modal-body #presentacion").text();
+
     //let tipo_etiq = $("#viewModal .modal-body input[name='tipo_etiq']:checked").val();
     let dataString  = 'process=printBcode'+'&id_producto='+id_producto
     dataString     += '&qty='+qty+'&tipo_etiq=NA'
+    dataString     += '&precio_sel='+precio
+    dataString     += '&presentacion='+presentacion
       $.ajax({
         type: 'POST',
         url: "admin_producto.php",
@@ -982,8 +987,10 @@ $(document).on("click", "#viewModal .modal-body #btnSetMT", function (event) {
 });
 
 let setPrinterBcode=()=>{
+
     let tipo_etiq = $("#viewModal .modal-body input[name='tipo_etiq']:checked").val();
     let dataString  = 'process=setPrintBcode'+'&tipo_etiq='+tipo_etiq
+    alert(dataString);
       $.ajax({
         type: 'POST',
         url: "admin_producto.php",
@@ -1022,6 +1029,31 @@ let setMarginBcode=()=>{
         dataType: 'json',
         success: function(datoss) {
             display_notify(datoss.typeinfo,datoss.msg);
+        }
+      });
+}
+
+
+$(document).on('change', '#viewModal .modal-body #presentacion', function(event) {
+  cargarPrecPres();
+});
+
+let cargarPrecPres=()=>{
+    let id_user  = $("#viewModal .modal-body #id_user").val()
+    let id_producto  = $("#viewModal .modal-body #id_prodd").val()
+    let presentacion = $("#viewModal .modal-body #presentacion").val();
+    let dataString   = 'process=cargarPrecPres'+'&presentacion='+presentacion
+        dataString  += '&id_producto='+id_producto+"&id_user="+id_user;
+
+      $.ajax({
+        type: 'POST',
+        url: "admin_producto.php",
+        data: dataString,
+        dataType: 'json',
+        success: function(datoss) {
+            display_notify(datoss.typeinfo,datoss.msg);
+            alert(datoss.select_rank);
+              $("#viewModal .modal-body .sel_r").html(datoss.select_rank);
         }
       });
 }

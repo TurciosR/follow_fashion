@@ -2,6 +2,7 @@
 include ("_core.php");
 $id_producto = $_REQUEST['id_producto'];
 $sql="SELECT p.descripcion, p.barcode, p.estado, p.exento, p.imagen,p.codart, pv.nombre, c.nombre_cat
+
 FROM producto AS p, proveedor as pv, categoria as c
 WHERE p.id_proveedor=pv.id_proveedor AND p.id_categoria=c.id_categoria AND  p.id_producto='$id_producto'";
 $result = _query( $sql);
@@ -93,7 +94,7 @@ $leftmarginlabel=$row_dir_print['leftmarginlabel'];
               <tr><td colspan=1 style="width:40%"><strong>Termica Directa</strong> <label class=" center-block">
                 <input type="radio" name="tipo_etiq" id="tipo_etiq1" value='TD' <?=$check_td;?>/></label></td>
               <td colspan=2 style="width:40%"> <strong>Transferencia Termica</strong><label class=" center-block">
-                <input type="radio" name="tipo_etiq" id="tipo_etiq2" value='TT' <?=$check_tt;?> ></div></td></label>
+                <input type="radio" name="tipo_etiq" id="tipo_etiq2" value='TT' <?=$check_tt;?> > </label></div></td>
               <td colspan=1 style="width:20%">
                 <button type='button' class='btn btn-primary'  id='btnSetMT' name='btnSetMT'><i class='fa fa-check'></i> Cambiar</button> </td>
             </tr>
@@ -102,9 +103,54 @@ $leftmarginlabel=$row_dir_print['leftmarginlabel'];
               <td colspan=2><input type='text'  class='form-control numeric' id='leftmargin' name='leftmargin'  value='<?=$leftmarginlabel;?>' ></td>
                 <td colspan=1><button type='button' class='btn btn-primary'  id='btnSetMargin' name='btnSetMargin'><i class='fa fa-check'></i>Actualizar</button>
                 </td>
-
             </tr>
+            <tr>
+              <td colspan=2><strong> Seleccione Presentación</strong></td>
+              <td colspan=2>
+                <?php
+                $array1=getPresentation($id_producto);
 
+                $select=crear_select2("presentacion", $array1, "", "width:100%;");
+                echo $select;
+                ?>
+              </td>
+
+                <!--td colspan=1><button type='button' class='btn btn-primary'  id='btnSetMargin' name='btnSetMargin'><i class='fa fa-check'></i>Actualizar</button></td-->
+            </tr>
+              <tr>
+            <td colspan=2><strong> Seleccione Precio por Presentación</strong></td>
+            <td colspan=2>
+                <?php
+                $r_precios=_fetch_array(_query("SELECT precios FROM usuario WHERE id_usuario=$id_user"));
+                $npre=count($array1);
+                $val = $array1[$npre];
+                list($id_pp,$nombr)=explode("-",$val);
+                $precios=$r_precios['precios'];
+                $preciosArray = _getPrecios($id_pp, $precios);
+                $xc=0;
+                  $select_rank="<select class='sel_r form-control'>";
+                foreach ($preciosArray as $key => $value) {
+                  // code...
+                  if ($value>0) {
+                    $select_rank.="<option value='$value'";
+                    if ($xc==0 || $precio_venta==$value) {
+                      $select_rank.=" selected ";
+                      $preciop=$value;
+                      $xc = 1;
+                    }
+                    $select_rank.=">$value</option>";
+                  }
+                }
+                if($xc==0)
+                {
+                  $select_rank.="<option value='0.0'>0.0</option>";
+                }
+                //$select_rank.="<option value='0.0'>0.0</option>";
+                $select_rank.="</select>";
+                echo   $select_rank;
+                ?>
+            </td>
+                </tr>
               <tr>
                 <td colspan=1><strong>Imprimir Cantidad:</strong></td>
                 <td colspan=2><input type='text'  class='form-control numeric' id='qty' name='qty' value='1' ></td>
@@ -113,7 +159,8 @@ $leftmarginlabel=$row_dir_print['leftmarginlabel'];
                 </tr>
             </tbody>
           </table>
-            <input type='hidden'  class='form-control' id='id_prodd' name='id_prodd' value='<?=$id_producto;?>' ></td>
+            <input type='hidden'  class='form-control' id='id_prodd' name='id_prodd' value='<?=$id_producto;?>' >
+            <input type='hidden'   id='id_user' name='id_user' value='<?=$id_user;?>' >
         </div>
         <?php if ($imagen!="") { ?>
           <!--Widgwt imagen-->

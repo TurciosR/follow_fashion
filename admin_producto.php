@@ -332,6 +332,9 @@ function printBcode()
   $qty 				 = $_POST['qty'];
 	$tipo_etiq	 = $_POST['tipo_etiq'];
   $id_producto = $_POST['id_producto'];
+  $precio_sel  = $_POST['precio_sel'];
+  $presentacion=$_REQUEST['presentacion'];
+  list($idp,$nombpresenta)=explode("-",$presentacion);
   $id_sucursal=$_SESSION['id_sucursal'];
   //Valido el sistema operativo y lo devuelvo para saber a que puerto redireccionar
   $info = $_SERVER['HTTP_USER_AGENT'];
@@ -349,7 +352,7 @@ function printBcode()
   $nreg_encode['shared_print_barcode'] =$shared_print_barcode;
   $nreg_encode['dir_print'] =$dir_print;
   $nreg_encode['sist_ope'] =$so_cliente;
-	$nreg_encode['datos'] =print_bcode($id_producto, $qty,$tipo_etiq);
+	$nreg_encode['datos'] =print_bcode($id_producto, $qty,$tipo_etiq,$precio_sel,$nombpresenta);
   echo json_encode($nreg_encode);
 }
 function setPrintBcode()
@@ -405,6 +408,50 @@ function setMarginBcode()
 	}
   echo json_encode($xdatos);
 }
+function cargarPrecPres(){
+  $id_presentacion=$_REQUEST['presentacion'];
+  $id_producto=$_REQUEST['id_producto'];
+  $id_user=$_REQUEST["id_user"];
+  $q=_query("SELECT precios FROM usuario WHERE id_usuario='$id_user'");
+  $r_precios=_fetch_array($q);
+  $precios=$r_precios['precios'];
+  $sql0="SELECT pp.id_pp
+  FROM  presentacion_producto AS pp
+  WHERE pp.id_producto = '$id_producto'
+  AND  pp.id_presentacion = '$id_presentacion'
+  ";
+    $res=_query($sql0);
+    $id_pp0=_fetch_array($res);
+    $id_pp=$id_pp0['id_pp'];
+
+     $xc=0;
+     $n_p=0;
+    $select_rank="";
+      $preciosArray = _getPrecios($id_pp, $precios);
+      $xc=0;
+
+      foreach ($preciosArray as $key => $value) {
+        // code...
+        if ($value>0.0) {
+          $select_rank.="<option value='$value'";
+          if ($xc==0 || $precio_venta==$value) {
+            $select_rank.=" selected ";
+            $preciop=$value;
+            $xc = 1;
+          }
+          $select_rank.=">$value</option>";
+        }
+      }
+
+      if($xc==0)
+      {
+        $select_rank.="<option value='0.0'>0.0</option>";
+      }
+
+  $xdatos['select_rank'] = $select_rank;
+
+echo json_encode($xdatos);
+}
 
 if (!isset($_POST['process'])) {
     initial();
@@ -450,6 +497,9 @@ if (!isset($_POST['process'])) {
             case 'setMarginBcode':
             setMarginBcode();
             break;
+            case 'cargarPrecPres':
+             cargarPrecPres();
+               break;
         }
     }
 }

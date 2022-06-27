@@ -2755,7 +2755,8 @@ function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT) {
 }
 
 //imprimir barcodes on ZPL
-function print_bcode($id_producto, $qty, $tipo_etiq ){
+function print_bcode($id_producto, $qty, $tipo_etiq,$precio_sel=0,$nombpresenta='' ){
+
 	$id_sucursal=$_SESSION['id_sucursal'];
 	$config_dir =getConfigDir($id_sucursal);
 	$row_dir_print=_fetch_array($config_dir);
@@ -2782,14 +2783,27 @@ function print_bcode($id_producto, $qty, $tipo_etiq ){
 		$string.="^CF0,30";
 		$string.="^BY2,1";
 		$posx+=5; $posy+=30;
+		/*
 		$string.="^FO".$posx.",".$posy."^BY2,2";
 		$string.="^BCN,80,Y,N,N";
 		$string.="^FD".$barcode."^FS";
+		*/
+		$len= strlen(trim("".$barcode));
+		if($len==13){
+			$string.="^FO".$posx.",".$posy."^BY3";
+			$string.="^BEN,80,Y,N,N";
+			$string.="^FD".$barcode."^FS";
+		}else{
+			$string.="^FO".$posx.",".$posy."^BY2,2";
+			$string.="^BCN,80,Y,N,N";
+			$string.="^FD".$barcode."^FS";
+		}
+
 		$posx-=5; $posy+=105;
 		$string.="^CF0,18";
 		$string.="^FO".$posx.",".$posy."^FD".$descripcion."^FS";
 		$posy+=20;
-		$string.="^FO".$posx.",".$posy."^FD".$descpre." ".$nombre."^FS";
+		$string.="^FO".$posx.",".$posy."^FD".$descpre." ".$nombpresenta." $ ".$precio_sel."^FS";
 		//$posx=30;
 		//$posy+=5;
 		//$string.="^CF0,30";

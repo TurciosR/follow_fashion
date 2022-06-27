@@ -1,18 +1,17 @@
 <?php
 /**
  * This file is part of the OpenPyme1.
- * 
+ *
  * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
- * 
+ *
  * For the full copyright and license information, please refere to LICENSE file
  * that has been distributed with this source code.
  */
 
 $username = "root";
-//$password = "admin$2022**."; //Server config
-$password = "admin$";
+$password = "adm1n";
 $hostname = "localhost";
-$dbname = "open_2cajas";
+$dbname = "follow_fashion";
 date_default_timezone_set('America/El_Salvador');
 $conexion = mysqli_connect("$hostname","$username","$password","$dbname");
 if (mysqli_connect_errno()){
@@ -513,10 +512,10 @@ function hora($hora)
   $hora_pos = date_format($hora_pre, 'g:i A');
   return $hora_pos;
 }
-function crear_select2($nombre,$array,$id_valor,$style){
+function crear_select2($nombre,$array,$id_valor='',$style){
   $txt='';
   //style='width:200px' <select id="select2-single-input-sm" class="form-control input-sm select2-single">
-  $txt.= "<select class='select2 form-control input-sm select2-single' name='$nombre' id='$nombre' style='$style'>";
+  $txt.= "<select class='select2 form-control input-sm select2-single selectt' name='$nombre' id='$nombre' style='$style'>";
 
   foreach($array as $clave=>$valor)
   {
@@ -530,6 +529,7 @@ function crear_select2($nombre,$array,$id_valor,$style){
   $txt .= "</select>";
   return $txt;
 }
+
 function zfill($string, $n){
   return str_pad($string,$n,"0",STR_PAD_LEFT);
 }
@@ -961,5 +961,25 @@ function _fetch_one($query_str){
     global $conexion;
     $query = _query($query_str);
     return mysqli_fetch_all($query, MYSQLI_ASSOC)[0];
+}
+
+//array para presentaciones
+function getPresentation($id_producto){
+	$sql="SELECT pr.id_presentacion,pr.nombre,pp.id_pp,
+  pp.descripcion as descpre
+  FROM presentacion AS pr
+  JOIN presentacion_producto AS pp
+  ON pp.id_presentacion=pr.id_presentacion
+  WHERE pp.id_producto='$id_producto'
+  	";
+    $res=_query($sql);
+  	$array =array();
+  	//$array["-1"] = "Seleccione";
+  while ($row=_fetch_array($res)) {
+  		$id=$row['id_presentacion'];
+  		$description=$row['id_pp']."-".$row['nombre'];
+  		$array[$id] = $description;
+  }
+  return $array;
 }
 ?>
