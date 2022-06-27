@@ -9,7 +9,7 @@
  */
 
 $username = "root";
-$password = "adm1n";
+$password = "admin$";
 $hostname = "localhost";
 $dbname = "follow_fashion";
 date_default_timezone_set('America/El_Salvador');

@@ -11,7 +11,7 @@ $hostname = "localhost";
 $username = "root";
 //$password = "pass";
 $password = "admin$";
-$dbname = "open_2cajas";;
+$dbname = "follow_fashion";
 
 	$conexion = mysqli_connect("$hostname","$username","$password","$dbname");
 	if (mysqli_connect_errno()){
