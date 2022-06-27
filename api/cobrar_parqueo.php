@@ -49,6 +49,9 @@ if (!empty($data["id_parqueo"]) && !empty($data["salida"])){
     $horas      = $difference->h;
     $fracciones = (1+(intval($difference->i / $preciosParqueo['minutos_fraccion'])+1));
 
+    $tiempo_estadia = str_pad($difference->h, 2, '0', STR_PAD_LEFT)  . ":";
+    $tiempo_estadia .= str_pad($difference->i, 2, '0', STR_PAD_LEFT);
+
     //Calcular total
     $total = (
         ($horas * $preciosParqueo['precio_hora'])
@@ -76,6 +79,7 @@ if (!empty($data["id_parqueo"]) && !empty($data["salida"])){
     $dataExecuted['num_doc']    = $queryParqueo['numero_doc'];
     $dataExecuted['precio_hora']= $preciosParqueo['precio_hora'];
     $dataExecuted['precio_fraccion'] = $preciosParqueo['precio_fraccion'];
+    $dataExecuted['tiempo_estadia']  = $tiempo_estadia;
     
     $dataExecuted['entrada']    = date(
         'h:i A', strtotime($queryParqueo['entrada'])

@@ -1,4 +1,16 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+ini_set('display_errors', 1);
+error_reporting( E_ERROR | E_PARSE );
 
 include_once("_conexion.php");
 
@@ -15,8 +27,7 @@ $fecha_hoy = date('Y-m-d');
 $queryParqueados = _query(
     "SELECT fecha, entrada, total, salida
         FROM parqueo
-        WHERE fecha =$fecha_hoy
-        AND id_sucursal=$id_sucursal"
+        WHERE fecha ='$fecha_hoy'"
 );
 
 //Obtener los precios del parqueo de la sucursal activa.
@@ -27,13 +38,16 @@ $preciosParqueo = _fetch_array(_query(
 ));
 
 foreach($queryParqueados AS $key => $rowParked){
+ 
     //calcular el tiempo de parqueo.
     if($rowParked['salida'] == "" || $rowParked['salida'] == null){
         $inicioParqueo = date('H:i:s', strtotime($rowParked['entrada']));
         $dateTimeObject1 = date_create($inicioParqueo); 
         $dateTimeObject2 = date_create(date('H:i:s'));
         
-        $difference = date_diff($dateTimeObject1, $dateTimeObject2); 
+        $difference = date_diff($dateTimeObject1, $dateTimeObject2);
+        
+        
     
         $infoParqueados['total_cobrar'] += (
             ($difference->h * $preciosParqueo['precio_hora'] )
@@ -48,7 +62,7 @@ foreach($queryParqueados AS $key => $rowParked){
     }
 
 }
-//$infoParqueados['total_cobrado'] = number_format($infoParqueados['total_cobrado'], 2);
+$infoParqueados['total_cobrado'] = number_format($infoParqueados['total_cobrado'], 2);
 //$infoParqueados['total_cobrar'] = number_format($infoParqueados['total_cobrar'], 2);
 $infoParqueados['total_cobrar'] = $infoParqueados['total_cobrado'];
 

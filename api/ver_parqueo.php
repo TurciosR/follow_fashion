@@ -62,7 +62,7 @@ if (!empty($data["id_parqueo"]) ){
     $dataExecuted['fracciones'] = $fracciones;
     $dataExecuted['total_cobro']= $total;
     $dataExecuted['placa']      = $queryParqueo['placa'];
-    $dataExecuted['id_parqueo']      = $queryParqueo['id_parqueo'];
+    $dataExecuted['id_parqueo'] = $queryParqueo['id_parqueo'];
     $dataExecuted['num_doc']    = $queryParqueo['numero_doc'];
     $dataExecuted['precio_hora']= $preciosParqueo['precio_hora'];
     $dataExecuted['precio_fraccion'] = $preciosParqueo['precio_fraccion'];
