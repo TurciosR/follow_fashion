@@ -47,7 +47,7 @@ if (!empty($data["id_parqueo"]) && !empty($data["salida"])){
     //Calcular diferencias
     $difference = date_diff($dateTimeObject1, $dateTimeObject2);
     $horas      = $difference->h;
-    $fracciones = (1+(intval($difference->i / $preciosParqueo['minutos_fraccion'])+1));
+    $fracciones =  (1+(intval($difference->i / $preciosParqueo['minutos_fraccion'])));
 
     $tiempo_estadia = str_pad($difference->h, 2, '0', STR_PAD_LEFT)  . ":";
     $tiempo_estadia .= str_pad($difference->i, 2, '0', STR_PAD_LEFT);

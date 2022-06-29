@@ -62,6 +62,11 @@ foreach($queryParqueados AS $key => $rowParked){
     }
 
 }
+
+if($difference->h == 0 && $difference == 0){
+    $infoParqueados['total_cobrado'] = $preciosParqueo['precio_fraccion'];
+}
+
 $infoParqueados['total_cobrado'] = number_format($infoParqueados['total_cobrado'], 2);
 //$infoParqueados['total_cobrar'] = number_format($infoParqueados['total_cobrar'], 2);
 $infoParqueados['total_cobrar'] = $infoParqueados['total_cobrado'];

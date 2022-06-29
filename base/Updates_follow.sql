@@ -25,3 +25,7 @@ INSERT INTO `parqueo_precios` (`id_precio_parqueo`, `precio_hora`, `precio_fracc
 
 --Agregar campo de correlativo para los que se estarán emitiendo en el parqueo
 ALTER TABLE `correlativo` ADD `tik_parqueo` INT NOT NULL COMMENT 'Correlativo para los tickets emitidos en parqueo' AFTER `con`;
+
+---------Update 2 del mes de Junio - 2022
+--insertar modulo de admin_cortes_parqueo
+INSERT INTO `modulo` (`id_server`, `unique_id`, `id_modulo`, `id_menu`, `nombre`, `descripcion`, `filename`, `mostrarmenu`) VALUES ('', '', NULL, '18', 'Admin cortes parqueo', 'Admin cortes parqueo', 'admi_cortes_parqueo.php', '1');
