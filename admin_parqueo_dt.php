@@ -38,6 +38,18 @@ require('ssp.customized.class.php');
         array(
             'db'    => 'numero_doc',
             'dt'    => 2,
+            'formatter' => function($numero_doc, $row){
+                $format = "$numero_doc";
+                $queryAnulada = _fetch_array(_query(
+                    "SELECT anulada FROM parqueo
+                    WHERE id_parqueo=$row[id_parqueo]"
+                ));
+                if($queryAnulada['anulada'] == 1){
+                    $numero_doc .= " <span style='color: orange;'><b> (Anulada)</b></span>";
+                }
+                //return $format;
+                return $numero_doc;
+            },
             'field' => 'numero_doc'
         ),
         array(
@@ -94,7 +106,32 @@ require('ssp.customized.class.php');
                 return "$".number_format($total,2);
             },
             'field' => 'total'
-        )
+        ),
+        array(
+            'db' => 'id_parqueo',
+            'dt' => 7,
+            'formatter' => function($id_parqueo){
+               $menudrop = "";
+               $link=permission_usr($_SESSION['id_usuario'],'anular_parqueo');
+               if($link!='NOT' || $_SESSION['admin']=='1'){
+                $menudrop .= "<div class='btn-group'>
+                    <a href='#' data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>
+                    <i class='fa fa-bars icon-white'></i> Menu<span class='caret'></span></a>
+                    <ul class='dropdown-menu dropdown-primary'>
+                    <li>
+                        <a data-id_parqueo='$id_parqueo' data-btn-anular=''>
+                            <i class=\"fa fa-times\"></i>
+                            Anular</a>
+                    </li>
+                    </ul>
+                    </div>";
+               }
+
+               return $menudrop;
+            },
+            'field' => 'salida'
+        ),
+        array('db' => 'anulada', 'dt' => 8, 'field' => 'anulada')
     );
     echo json_encode(
         SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere)

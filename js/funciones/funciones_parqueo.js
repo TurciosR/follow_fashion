@@ -6,7 +6,7 @@
  * For the full copyright and license information, please refere to LICENSE file
  * that has been distributed with this source code.
  */
-
+//================== <Event Listeners> ====================//
  $(document).on('keyup change', '.input-precio-parqueo', function (){
   validateValues(this);
   console.log("lo polisia");
@@ -27,6 +27,11 @@ $(document).ready(function() {
   }, 100); 
 });
 
+$(document).on('click', '[data-btn-anular=""]', function (){
+  cancelParking(this);
+});
+
+//================== </Event Listeners> ====================//
 
 /**
  * generate data on table
@@ -143,4 +148,42 @@ function updatePrices(){
       }
     });
   }
+}
+
+function cancelParking(clickedObj){
+  let params = {
+    action     : "cancelParking",
+    id_parking  : $(clickedObj).data('id_parqueo')
+  }
+  swal({
+    title: "Confirme para anular este registro de parqueo",
+    text: "",
+    type: "warning",
+    showCancelButton: true,
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirmar!",
+    closeOnConfirm: false },
+    
+    function(isConfirm){
+      if(isConfirm == true){
+        $.ajax({
+          type: 'POST',
+          url: "admin_parqueo.php",
+          data: params,
+          dataType: 'json',
+          success: function(datax){
+            display_notify(datax.status, datax.msg);
+            if(datax.status.toLowerCase() == "success"){
+              window.location.reload();
+            }
+          },
+          error: function(){
+            display_notify('Error', 'Ocurrió un error en la respuesta del servidor');
+          }
+        });
+      }
+      
+    }
+  );
 }
