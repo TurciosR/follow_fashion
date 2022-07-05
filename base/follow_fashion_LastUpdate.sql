@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 25-06-2022 a las 13:31:58
+-- Tiempo de generación: 29-06-2022 a las 15:33:50
 -- Versión del servidor: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Versión de PHP: 7.4.30
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `open_2cajas`
+-- Base de datos: `follow_fashion`
 --
 
 -- --------------------------------------------------------
@@ -106,6 +106,14 @@ CREATE TABLE `apertura_caja` (
   `monto_vendido` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `apertura_caja`
+--
+
+INSERT INTO `apertura_caja` (`id_server`, `unique_id`, `id_sucursal`, `id_apertura`, `fecha`, `hora`, `caja`, `turno_vigente`, `id_empleado`, `turno`, `monto_apertura`, `monto_ch`, `monto_ch_actual`, `tiket_inicia`, `factura_inicia`, `credito_fiscal_inicia`, `dev_inicia`, `vigente`, `monto_vendido`) VALUES
+(0, 'S62b9d07c3c2a21.02648366', 1, 1, '2022-06-27', '09:45:00', 1, 0, 1, 2, 50, '0.00', '0.00', 0, 0, 0, 0, 0, 50),
+(0, 'S62bc93d2de8516.92188440', 1, 2, '2022-06-29', '12:02:58', 1, 1, 1, 1, 50, '0.00', '0.00', 0, 0, 0, 0, 1, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -154,7 +162,7 @@ CREATE TABLE `caja` (
 --
 
 INSERT INTO `caja` (`id_server`, `unique_id`, `id_sucursal`, `id_caja`, `nombre`, `serie`, `desde`, `hasta`, `correlativo_dispo`, `resolucion`, `fecha`, `activa`) VALUES
-(1, 'O5f05eb3edefc49.58616938', 1, 1, 'Caja 1', '21MS00000001', 1, 10000, 5, 'ASC-15041-039094-2021', '2021-07-02', 1),
+(1, 'O5f05eb3edefc49.58616938', 1, 1, 'Caja 1', '21MS00000001', 1, 10000, 6, 'ASC-15041-039094-2021', '2021-07-02', 1),
 (2, 'O5f05eb3edefc49.58616932', 1, 2, 'Caja 2', '21MS00000002', 1, 10000, 1, 'ASC-15041-039094-2021', '2021-07-02', 1);
 
 -- --------------------------------------------------------
@@ -547,6 +555,13 @@ CREATE TABLE `controlcaja` (
   `czxe` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `controlcaja`
+--
+
+INSERT INTO `controlcaja` (`id_server`, `unique_id`, `id_sucursal`, `id_corte`, `fecha`, `id_empleado`, `id_apertura`, `caja`, `turno`, `cajero`, `fecha_corte`, `hora_corte`, `tiket`, `ticket_e`, `tinicio`, `tfinal`, `totalnot`, `texento`, `tgravado`, `totalt`, `finicio`, `ffinal`, `totalnof`, `fexento`, `fgravado`, `totalf`, `cfinicio`, `cffinal`, `totalnocf`, `cfexento`, `cfgravado`, `totalcf`, `rinicio`, `rfinal`, `totalnor`, `rexento`, `rgravado`, `totalr`, `cashinicial`, `vtacontado`, `vtaefectivo`, `vtatcredito`, `totalgral`, `subtotal`, `cashfinal`, `diferencia`, `totalnodev`, `totalnoanu`, `depositos`, `vales`, `tarjetas`, `depositon`, `valen`, `tarjetan`, `ingresos`, `tcredito`, `ncortex`, `ncortez`, `ncortezm`, `cerrado`, `tipo_corte`, `monto_ch`, `retencion`, `tinicio_e`, `tfinal_e`, `tdoctexe`, `tottexe`, `finicio_e`, `ffinal_e`, `tdocfexe`, `totfexe`, `cfinicio_e`, `cffinal_e`, `tdoccfexe`, `totcfexe`, `czxe`) VALUES
+(0, 'S62bc93cdcf3542.77381932', 1, 1, '', 1, 1, NULL, 1, NULL, '2022-06-27', '21:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, NULL, 0, NULL, 50, NULL, 50, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'C', 0, 0, 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -588,7 +603,31 @@ CREATE TABLE `correlativo` (
 --
 
 INSERT INTO `correlativo` (`id_server`, `unique_id`, `id_sucursal`, `id_numdoc`, `tik`, `cof`, `ccf`, `ref`, `ii`, `di`, `ai`, `ti`, `voc`, `aj`, `cot`, `tre`, `trr`, `dev`, `nc`, `pd`, `pdp`, `cof_e`, `ccf_e`, `nc_e`, `dev_e`, `con`, `tik_parqueo`) VALUES
-(1, 'O5f05eb400e59b6.44715651', 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+(1, 'O5f05eb400e59b6.44715651', 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cortes_parqueo`
+--
+
+CREATE TABLE `cortes_parqueo` (
+  `server_id` int(11) NOT NULL,
+  `unique_id` varchar(255) NOT NULL,
+  `id_corte_parqueo` int(11) NOT NULL,
+  `id_sucursal` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL COMMENT 'usuario quien registra el corte',
+  `fecha` date NOT NULL,
+  `hora` time NOT NULL,
+  `correlativo_inicio` varchar(20) NOT NULL,
+  `correlativo_fin` varchar(20) NOT NULL,
+  `efectivo_en_caja` decimal(10,2) NOT NULL COMMENT 'efectivo cobrado',
+  `total_corte` decimal(10,2) NOT NULL COMMENT 'total general del corte',
+  `diferencia` decimal(10,2) NOT NULL,
+  `ticket_anulados` int(11) NOT NULL,
+  `total_parqueados` int(11) NOT NULL COMMENT 'total de vehiculos que usaron el parqueo',
+  `monto_anulado` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -756,6 +795,15 @@ CREATE TABLE `detalle_apertura` (
   `vigente` tinyint(1) NOT NULL,
   `caja` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `detalle_apertura`
+--
+
+INSERT INTO `detalle_apertura` (`id_server`, `unique_id`, `id_sucursal`, `id_detalle`, `id_apertura`, `turno`, `id_usuario`, `fecha`, `hora`, `vigente`, `caja`) VALUES
+(0, 'S62b9d07c3d8460.00761010', 0, 1, 1, 1, 1, '2022-06-27', '09:45:00', 0, 1),
+(0, 'S62bc93cdd19984.89307233', 0, 2, 1, 2, 0, '2022-06-27', '21:00:00', 0, 0),
+(0, 'S62bc93d2df4d29.17309418', 0, 3, 2, 1, 1, '2022-06-29', '12:02:58', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1029,6 +1077,13 @@ CREATE TABLE `factura` (
   `clave` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `factura`
+--
+
+INSERT INTO `factura` (`id_server`, `unique_id`, `id_sucursal`, `id_factura`, `id_cliente`, `fecha`, `numero_doc`, `referencia`, `numero_ref`, `subtotal`, `sumas`, `suma_gravado`, `iva`, `retencion`, `venta_exenta`, `total_menos_retencion`, `total`, `descuento`, `porcentaje`, `id_usuario`, `anulada`, `id_empleado`, `finalizada`, `impresa`, `tipo`, `serie`, `serie_e`, `num_fact_impresa`, `hora`, `turno`, `id_apertura`, `id_apertura_pagada`, `credito`, `abono`, `saldo`, `afecta`, `tipo_documento`, `caja`, `numero_doc_e`, `num_fact_impresa_e`, `nombre`, `direccion`, `precio_aut`, `clave`) VALUES
+(0, 'S62bc9438eafaa0.23809861', 1, 1, 1, '2022-06-29', '0000000005_TIK', '', 0, 6.75, 6.75, 6.75, 0, 0, 0, 6.75, 6.75, 0, 0, 1, 0, 1, 1, 1, 'TICKET', '21MS00000001', '', '5', '12:04:40', 1, 2, 2, 0, 0, 0, 0, 'TIK', 1, '', '', '', '', 0, '');
+
 -- --------------------------------------------------------
 
 --
@@ -1058,6 +1113,13 @@ CREATE TABLE `factura_detalle` (
   `exento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `factura_detalle`
+--
+
+INSERT INTO `factura_detalle` (`id_server`, `unique_id`, `id_sucursal`, `id_factura_detalle`, `id_factura`, `id_prod_serv`, `id_server_prod`, `cantidad`, `precio_venta`, `subtotal`, `descuento`, `id_empleado`, `tipo_prod_serv`, `id_factura_dia`, `fecha`, `impresa_lote`, `hora`, `id_presentacion`, `id_server_presen`, `exento`) VALUES
+(0, 'S62bc9438ec5cc6.46599250', 1, 1, 1, 1, 0, '1.0000', '6.7500', '6.75', 0, 1, 'PRODUCTO', 0, '2022-06-29', 0, '00:00:00', 1, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -1085,7 +1147,9 @@ CREATE TABLE `log_cambio_local` (
 
 INSERT INTO `log_cambio_local` (`id_log_cambio`, `id_server`, `process`, `tabla`, `fecha`, `hora`, `id_usuario`, `id_sucursal`, `id_primario`, `subido`, `verificado`, `prioridad`) VALUES
 (1, NULL, 'insert', 'producto', '2022-06-21', '09:59:33', 1, 1, 1, 0, 0, 1),
-(2, NULL, 'update', 'correlativo', '2022-06-21', '10:00:42', 1, 1, 1, 0, 0, 1);
+(2, NULL, 'update', 'correlativo', '2022-06-21', '10:00:42', 1, 1, 1, 0, 0, 1),
+(3, NULL, 'insert', 'producto', '2022-06-27', '09:52:32', 1, 1, 1, 0, 0, 1),
+(4, NULL, 'update', 'correlativo', '2022-06-27', '09:53:42', 1, 1, 1, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1107,7 +1171,8 @@ CREATE TABLE `log_detalle_cambio_local` (
 --
 
 INSERT INTO `log_detalle_cambio_local` (`id_server`, `unique_id`, `id_detalle_cambio`, `id_log_cambio`, `tabla`, `id_verificador`) VALUES
-(0, 'S62b1eae5c55dd8.40451601', 1, 1, 'producto', 1);
+(0, 'S62b1eae5c55dd8.40451601', 1, 1, 'producto', 1),
+(0, 'S62b9d240bb70e4.02915254', 2, 3, 'producto', 1);
 
 -- --------------------------------------------------------
 
@@ -1126,6 +1191,94 @@ CREATE TABLE `log_update_local` (
   `id_usuario` int(11) DEFAULT NULL,
   `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `log_update_local`
+--
+
+INSERT INTO `log_update_local` (`id_server`, `unique_id`, `id_log_cambio`, `query`, `tabla`, `fecha`, `hora`, `id_usuario`, `id_sucursal`) VALUES
+(0, 'S62ba8adc913425.39503131', 1, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78600ca0.70437817\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc930cb4.44458365', 2, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7860dcc8.73626143\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc943ee8.51356825', 3, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78622e76.54193513\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc953704.62889627', 4, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78634b43.55016501\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc95efe9.89242643', 5, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78644924.72357360\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc968316.23770195', 6, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7864e9b7.80037894\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc972094.96517149', 7, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7865ee29.24636768\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9794a9.21697899', 8, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78669e57.37581209\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc97dc03.92639314', 9, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78674391.39527869\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc983ca5.70509526', 10, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7867c329.65761527\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc98b183.76408524', 11, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78687625.48590687\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc991e21.27954074', 12, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7868ef40.64404782\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9985a0.60733514', 13, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7869ab28.37055820\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc99cd40.03150032', 14, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786a54f5.18601996\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9a26c2.48548445', 15, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786aec36.64749459\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9a96f8.08545944', 16, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786b90c0.13012419\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9aecc6.67276257', 17, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786c2ab0.35485650\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9b4429.92219699', 18, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786c9601.49027206\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9bb3d2.68354728', 19, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786dbfa9.51433476\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9c06b1.40159551', 20, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf786f0072.89570605\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9c7927.23076185', 21, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787069d9.82528580\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9ccab3.52223235', 22, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7871bb03.63390163\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9d28e9.76875065', 23, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78731886.13680121\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9dc4a7.06435297', 24, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78748828.94947470\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9e1915.30821884', 25, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78758d48.71800971\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9e99d3.72306325', 26, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78767e25.65954963\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9ee3d9.70854028', 27, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78777d39.06420707\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9f5383.29855412', 28, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78785801.04033068\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9fa8a5.31327548', 29, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78792828.43391648\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adc9ffac8.82597901', 30, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7879d194.98145026\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca07333.82266547', 31, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787a87a9.75497898\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca0c975.50166916', 32, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787b4729.84243876\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca11dd6.87603970', 33, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787bfd62.17988140\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca19f15.67657217', 34, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787c8dc4.93335754\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca21274.92967285', 35, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787d3b05.79497336\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca2bc75.80944824', 36, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787e0242.93454243\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca37522.57086718', 37, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787e90e8.73501732\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca40163.67167524', 38, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf787f8649.74743044\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca4d411.13563630', 39, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788020c9.05351889\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca5a321.05260220', 40, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7880c2c3.80955688\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca66b82.74571678', 41, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78814404.45790822\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca70ac6.47050084', 42, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788204d3.50996884\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca7d9b5.19737505', 43, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7882ad42.13182541\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca89a69.16607697', 44, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78834755.95602667\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adca96f12.44114641', 45, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788413d9.71817621\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcaa3136.56210715', 46, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7884be97.49686401\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcab2433.67404017', 47, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78853e47.62716243\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcac28c4.59294934', 48, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78860cc3.71589671\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcad2cc9.95011294', 49, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7886d222.75545944\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcadf6b6.88602441', 50, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78879318.21594673\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcaeb5d9.76070940', 51, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788821e1.91244946\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcaf8455.74005476', 52, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7888c4b2.18040819\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb03f16.16843429', 53, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78895663.21058142\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb0cc41.96400679', 54, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788a09b4.20736244\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb17fa7.17298522', 55, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788aaef3.76673129\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb252f1.12409701', 56, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788b47b3.45664899\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb2f892.97173922', 57, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788c1bc1.46078864\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb3c876.02461209', 58, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788cc9b6.04897190\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb49206.93410051', 59, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788d6ed1.76545326\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb55495.67453991', 60, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788e0398.40324970\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb61069.31299700', 61, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788e9c53.84462138\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb6ba48.37802791', 62, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788f1661.42808184\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb785d1.49062797', 63, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf788fc926.40753999\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb85f78.40343700', 64, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78907968.62415298\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb924c6.01600589', 65, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78912403.60611713\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcb9c735.86610003', 66, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789372c1.87993318\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcba9c27.17819300', 67, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78944a80.48829542\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbb6963.01981615', 68, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7894f022.87409452\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbc3952.32494731', 69, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78957f08.74615751\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbd11e5.69343002', 70, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789632f8.40770333\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbdd775.18044545', 71, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7896b307.12878036\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbe69f0.77708053', 72, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78976c11.16808405\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcbf4a87.43330763', 73, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7897f790.23561630\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc01419.68700853', 74, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78989fc6.03656453\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc0d627.97569711', 75, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf78992830.21231400\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc17ba7.75327790', 76, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf7899a261.03434887\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc24541.97735212', 77, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789a4710.23800861\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc302f4.47644647', 78, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789ad782.98879334\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc3ce73.58364376', 79, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789b9358.20632156\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc48927.02580923', 80, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789cbc94.78858079\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc561e1.09839143', 81, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789d9958.15094013\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1),
+(0, 'S62ba8adcc625a7.66117862', 82, 'DELETE FROM usuario_modulo WHERE unique_id =\'S62b5cf789ef0c9.49066971\'', 'usuario_modulo', '2022-06-27', '23:00:12', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1154,7 +1307,8 @@ CREATE TABLE `lote` (
 --
 
 INSERT INTO `lote` (`id_server`, `unique_id`, `id_sucursal`, `id_lote`, `id_producto`, `fecha_entrada`, `numero`, `cantidad`, `precio`, `id_presentacion`, `vencimiento`, `estado`, `referencia`) VALUES
-(0, 'S62b1eb2aa0d009.46909279', 1, 1, 1, '2022-06-21', 1, '95.0000', '1.0000', 1, '0000-00-00', 'VIGENTE', 1);
+(0, 'S62b1eb2aa0d009.46909279', 1, 1, 1, '2022-06-21', 1, '94.0000', '1.0000', 1, '0000-00-00', 'VIGENTE', 1),
+(0, 'S62b9d286e26db5.84590212', 1, 2, 1, '2022-06-27', 2, '550.0000', '5.0000', 1, '0000-00-00', 'VIGENTE', 2);
 
 -- --------------------------------------------------------
 
@@ -1360,7 +1514,10 @@ INSERT INTO `modulo` (`id_server`, `unique_id`, `id_modulo`, `id_menu`, `nombre`
 (176, 'O6064ad064ae143.48077429', 149, 17, 'Reporte Z', 'Reporte Z', 'reportez.php', 1),
 (0, '', 150, 5, 'Usar precio en base a porcentaje de utilidad', 'Usar precio basado en porcentaje de utilidad', 'unlock_edit_price', 0),
 (0, '', 151, 18, 'Admin parqueo', 'Admin parqueo', 'admin_parqueo.php', 1),
-(0, '', 152, 18, 'Admin precios de parqueo', 'Gestionar precios del parqueo', 'precios_parqueo.php', 1);
+(0, '', 152, 18, 'Admin precios de parqueo', 'Gestionar precios del parqueo', 'precios_parqueo.php', 1),
+(0, '', 153, 18, 'Corte de parqueo', 'corte de parqueo', 'corte_parqueo.php', 1),
+(0, '', 154, 18, 'Anular parqueo', 'Anular parqueo', 'anular_parqueo', 0),
+(0, '', 155, 18, 'Admin cortes parqueo', 'Admin cortes parqueo', 'admin_cortes_parqueo.php', 1);
 
 -- --------------------------------------------------------
 
@@ -1407,6 +1564,14 @@ CREATE TABLE `movimiento_producto` (
   `sistema` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `movimiento_producto`
+--
+
+INSERT INTO `movimiento_producto` (`id_server`, `unique_id`, `id_sucursal`, `id_movimiento`, `correlativo`, `concepto`, `total`, `tipo`, `proceso`, `referencia`, `id_empleado`, `fecha`, `hora`, `id_suc_origen`, `id_suc_destino`, `id_proveedor`, `id_compra`, `id_traslado`, `id_factura`, `numero`, `conteo`, `sistema`) VALUES
+(0, 'S62b9d286df1b32.96507683', 1, 1, '0000002_II', 'INVENTARIO INICIAL', 2750, 'ENTRADA', 'II', 2, 1, '2022-06-27', '09:53:42', 1, 1, 0, 0, 0, 0, 0, '', ''),
+(0, 'S62bc9438eba858.24823655', 1, 2, '0000000005_TIK', 'VENTA', 6.75, 'SALIDA', 'TIK', 5, 1, '2022-06-29', '12:04:40', 1, 1, 0, 0, 0, 1, 0, '', '');
+
 -- --------------------------------------------------------
 
 --
@@ -1434,6 +1599,14 @@ CREATE TABLE `movimiento_producto_detalle` (
   `fecha` date NOT NULL,
   `hora` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `movimiento_producto_detalle`
+--
+
+INSERT INTO `movimiento_producto_detalle` (`id_server`, `unique_id`, `id_sucursal`, `id_detalle`, `id_movimiento`, `id_producto`, `id_server_prod`, `id_presentacion`, `id_server_presen`, `cantidad`, `costo`, `precio`, `stock_anterior`, `stock_actual`, `proceso`, `referencia`, `lote`, `fecha`, `hora`) VALUES
+(0, 'S62b9d286e147b6.35858320', 0, 1, 1, 1, 0, 1, 0, '550.0000', 5, 6.75, '0.0000', '550.0000', '', 0, 2, '2022-06-27', '09:53:42'),
+(0, 'S62bc9438ee21d8.62858284', 0, 2, 2, 1, 0, 1, 0, '1.0000', 5, 6.75, '550.0000', '549.0000', '', 0, 0, '2022-06-29', '12:04:40');
 
 -- --------------------------------------------------------
 
@@ -1483,6 +1656,14 @@ CREATE TABLE `movimiento_stock_ubicacion` (
   `id_server_presen` int(11) NOT NULL,
   `id_mov_prod` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `movimiento_stock_ubicacion`
+--
+
+INSERT INTO `movimiento_stock_ubicacion` (`id_server`, `unique_id`, `id_sucursal`, `id_movimiento`, `id_producto`, `id_server_prod`, `id_origen`, `id_destino`, `cantidad`, `fecha`, `hora`, `anulada`, `afecta`, `id_presentacion`, `id_server_presen`, `id_mov_prod`) VALUES
+(0, 'S62b9d286e2fea8.18545992', 1, 1, 1, 0, 0, 1, '550.0000', '2022-06-27', '09:53:42', 0, 0, 1, 0, 1),
+(0, 'S62bc9438eda489.65079136', 1, 2, 1, 0, 1, 0, '1.0000', '2022-06-29', '12:04:40', 0, 0, 1, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -1875,7 +2056,9 @@ CREATE TABLE `parqueo` (
   `salida` time DEFAULT NULL,
   `total` decimal(10,2) DEFAULT 0.00,
   `numero_doc` varchar(30) DEFAULT NULL,
-  `eliminado` tinyint(4) DEFAULT 0
+  `eliminado` tinyint(4) DEFAULT 0,
+  `anulada` tinyint(4) NOT NULL,
+  `id_corte_parqueo` int(11) NOT NULL COMMENT 'si este campo es cero, el registro se incluye en un nuevo corte'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -1899,7 +2082,7 @@ CREATE TABLE `parqueo_precios` (
 --
 
 INSERT INTO `parqueo_precios` (`id_precio_parqueo`, `precio_hora`, `precio_fraccion`, `minutos_fraccion`, `deleted`, `id_sucursal`, `activo`) VALUES
-(1, '2.00', '0.25', 15, NULL, 1, 1);
+(1, '1.00', '1.00', 60, NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -2062,6 +2245,13 @@ CREATE TABLE `presentacion` (
   `descripcion` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `presentacion`
+--
+
+INSERT INTO `presentacion` (`id_server`, `unique_id`, `id_sucursal`, `id_presentacion`, `nombre`, `descripcion`) VALUES
+(0, 'S62b9d102ebe6b6.12693592', 0, 1, 'Unidad', '1x1');
+
 -- --------------------------------------------------------
 
 --
@@ -2089,6 +2279,13 @@ CREATE TABLE `presentacion_producto` (
   `activo` tinyint(1) NOT NULL,
   `barcode` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `presentacion_producto`
+--
+
+INSERT INTO `presentacion_producto` (`id_server`, `unique_id`, `id_pp`, `id_producto`, `id_server_prod`, `id_presentacion`, `descripcion`, `unidad`, `costo`, `costo_s_iva`, `precio`, `precio1`, `precio2`, `precio3`, `precio4`, `precio5`, `precio6`, `activo`, `barcode`) VALUES
+(0, 'S62b9d240bbb816.67087285', 1, 1, 0, 1, 'Producto de pruebas', 1, '5.0000', 0, '6.7500', '7.0000', '7.5000', '0.0000', '0.0000', '0.0000', '0.0000', 1, '');
 
 -- --------------------------------------------------------
 
@@ -2120,6 +2317,13 @@ CREATE TABLE `producto` (
   `color` text COLLATE utf8_spanish_ci NOT NULL,
   `eval` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `producto`
+--
+
+INSERT INTO `producto` (`id_server`, `unique_id`, `id_producto`, `barcode`, `codart`, `descripcion`, `composicion`, `marca`, `estado`, `perecedero`, `exento`, `minimo`, `decimals`, `id_categoria`, `id_proveedor`, `imagen`, `id_sucursal`, `costo`, `precio`, `precio_mayoreo`, `color`, `eval`) VALUES
+(0, 'S62b9d240b9c638.37072989', 1, '', '1', 'PRODUCTO DE PRUEBA', '', 'OSS', 1, 0, 0, 20, 0, 1, 1, '', 0, 0, 0, 0, '', 0);
 
 -- --------------------------------------------------------
 
@@ -2169,6 +2373,13 @@ CREATE TABLE `proveedor` (
   `nacionalidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `proveedor`
+--
+
+INSERT INTO `proveedor` (`id_server`, `unique_id`, `id_sucursal`, `id_proveedor`, `categoria`, `tipo`, `codigoant`, `nombre`, `direccion`, `municipio`, `depto`, `pais`, `contacto`, `nrc`, `nit`, `dui`, `giro`, `telefono1`, `telefono2`, `celular`, `fax`, `email`, `ultcompra`, `acumulado`, `saldo`, `percibe`, `retiene`, `retiene10`, `a30`, `a60`, `a90`, `m90`, `vencido`, `pagadas`, `pendientes`, `total1`, `nombreche`, `viñeta`, `nacionalidad`) VALUES
+(0, 'S62b9d1aeac0140.60040130', 1, 1, 1, 1, NULL, 'PROVEEDOR DE PRUEBAS', '', '81', '13', NULL, 'Sr. Proveedor', '00000', '000000', '', 'Industrial', '7878-8080', '', '', '', 'sr.proveedor@mail.com', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Sr. Proveedor', NULL, 68);
+
 -- --------------------------------------------------------
 
 --
@@ -2211,6 +2422,13 @@ CREATE TABLE `stock` (
   `update_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `stock`
+--
+
+INSERT INTO `stock` (`id_server`, `unique_id`, `id_sucursal`, `id_stock`, `id_producto`, `stock`, `stock_local`, `precio_unitario`, `costo_unitario`, `create_date`, `update_date`) VALUES
+(0, 'S62b9d286e1b755.79989137', 1, 1, 1, '549.0000', '550.0000', 6.75, 5, '2022-06-27', '2022-06-29');
+
 -- --------------------------------------------------------
 
 --
@@ -2228,6 +2446,13 @@ CREATE TABLE `stock_ubicacion` (
   `id_estante` int(11) NOT NULL,
   `id_posicion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `stock_ubicacion`
+--
+
+INSERT INTO `stock_ubicacion` (`id_server`, `unique_id`, `id_sucursal`, `id_su`, `id_producto`, `cantidad`, `id_ubicacion`, `id_estante`, `id_posicion`) VALUES
+(0, 'S62b9d286e043d4.21348066', 1, 1, 1, '549.0000', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -3273,88 +3498,92 @@ INSERT INTO `usuario_modulo` (`id_server`, `unique_id`, `id_sucursal`, `id_mod_u
 (0, 'S6206df4c367521.07611817', 0, 1023, 120, 14),
 (0, 'S6206df4c3727b8.47368817', 0, 1024, 142, 14),
 (0, 'S6206df4c37b629.05463706', 0, 1025, 143, 14),
-(0, 'S62b5cf78600ca0.70437817', 0, 1026, 43, 1),
-(0, 'S62b5cf7860dcc8.73626143', 0, 1027, 44, 1),
-(0, 'S62b5cf78622e76.54193513', 0, 1028, 1, 1),
-(0, 'S62b5cf78634b43.55016501', 0, 1029, 2, 1),
-(0, 'S62b5cf78644924.72357360', 0, 1030, 3, 1),
-(0, 'S62b5cf7864e9b7.80037894', 0, 1031, 5, 1),
-(0, 'S62b5cf7865ee29.24636768', 0, 1032, 68, 1),
-(0, 'S62b5cf78669e57.37581209', 0, 1033, 82, 1),
-(0, 'S62b5cf78674391.39527869', 0, 1034, 83, 1),
-(0, 'S62b5cf7867c329.65761527', 0, 1035, 148, 1),
-(0, 'S62b5cf78687625.48590687', 0, 1036, 19, 1),
-(0, 'S62b5cf7868ef40.64404782', 0, 1037, 20, 1),
-(0, 'S62b5cf7869ab28.37055820', 0, 1038, 21, 1),
-(0, 'S62b5cf786a54f5.18601996', 0, 1039, 22, 1),
-(0, 'S62b5cf786aec36.64749459', 0, 1040, 23, 1),
-(0, 'S62b5cf786b90c0.13012419', 0, 1041, 45, 1),
-(0, 'S62b5cf786c2ab0.35485650', 0, 1042, 46, 1),
-(0, 'S62b5cf786c9601.49027206', 0, 1043, 47, 1),
-(0, 'S62b5cf786dbfa9.51433476', 0, 1044, 48, 1),
-(0, 'S62b5cf786f0072.89570605', 0, 1045, 49, 1),
-(0, 'S62b5cf787069d9.82528580', 0, 1046, 72, 1),
-(0, 'S62b5cf7871bb03.63390163', 0, 1047, 73, 1),
-(0, 'S62b5cf78731886.13680121', 0, 1048, 74, 1),
-(0, 'S62b5cf78748828.94947470', 0, 1049, 75, 1),
-(0, 'S62b5cf78758d48.71800971', 0, 1050, 76, 1),
-(0, 'S62b5cf78767e25.65954963', 0, 1051, 134, 1),
-(0, 'S62b5cf78777d39.06420707', 0, 1052, 37, 1),
-(0, 'S62b5cf78785801.04033068', 0, 1053, 38, 1),
-(0, 'S62b5cf78792828.43391648', 0, 1054, 50, 1),
-(0, 'S62b5cf7879d194.98145026', 0, 1055, 69, 1),
-(0, 'S62b5cf787a87a9.75497898', 0, 1056, 70, 1),
-(0, 'S62b5cf787b4729.84243876', 0, 1057, 84, 1),
-(0, 'S62b5cf787bfd62.17988140', 0, 1058, 133, 1),
-(0, 'S62b5cf787c8dc4.93335754', 0, 1059, 92, 1),
-(0, 'S62b5cf787d3b05.79497336', 0, 1060, 93, 1),
-(0, 'S62b5cf787e0242.93454243', 0, 1061, 94, 1),
-(0, 'S62b5cf787e90e8.73501732', 0, 1062, 95, 1),
-(0, 'S62b5cf787f8649.74743044', 0, 1063, 96, 1),
-(0, 'S62b5cf788020c9.05351889', 0, 1064, 97, 1),
-(0, 'S62b5cf7880c2c3.80955688', 0, 1065, 137, 1),
-(0, 'S62b5cf78814404.45790822', 0, 1066, 121, 1),
-(0, 'S62b5cf788204d3.50996884', 0, 1067, 122, 1),
-(0, 'S62b5cf7882ad42.13182541', 0, 1068, 126, 1),
-(0, 'S62b5cf78834755.95602667', 0, 1069, 138, 1),
-(0, 'S62b5cf788413d9.71817621', 0, 1070, 144, 1),
-(0, 'S62b5cf7884be97.49686401', 0, 1071, 145, 1),
-(0, 'S62b5cf78853e47.62716243', 0, 1072, 146, 1),
-(0, 'S62b5cf78860cc3.71589671', 0, 1073, 147, 1),
-(0, 'S62b5cf7886d222.75545944', 0, 1074, 149, 1),
-(0, 'S62b5cf78879318.21594673', 0, 1075, 41, 1),
-(0, 'S62b5cf788821e1.91244946', 0, 1076, 42, 1),
-(0, 'S62b5cf7888c4b2.18040819', 0, 1077, 111, 1),
-(0, 'S62b5cf78895663.21058142', 0, 1078, 112, 1),
-(0, 'S62b5cf788a09b4.20736244', 0, 1079, 113, 1),
-(0, 'S62b5cf788aaef3.76673129', 0, 1080, 114, 1),
-(0, 'S62b5cf788b47b3.45664899', 0, 1081, 115, 1),
-(0, 'S62b5cf788c1bc1.46078864', 0, 1082, 116, 1),
-(0, 'S62b5cf788cc9b6.04897190', 0, 1083, 117, 1),
-(0, 'S62b5cf788d6ed1.76545326', 0, 1084, 132, 1),
-(0, 'S62b5cf788e0398.40324970', 0, 1085, 6, 1),
-(0, 'S62b5cf788e9c53.84462138', 0, 1086, 7, 1),
-(0, 'S62b5cf788f1661.42808184', 0, 1087, 8, 1),
-(0, 'S62b5cf788fc926.40753999', 0, 1088, 10, 1),
-(0, 'S62b5cf78907968.62415298', 0, 1089, 11, 1),
-(0, 'S62b5cf78912403.60611713', 0, 1090, 12, 1),
-(0, 'S62b5cf789372c1.87993318', 0, 1091, 13, 1),
-(0, 'S62b5cf78944a80.48829542', 0, 1092, 14, 1),
-(0, 'S62b5cf7894f022.87409452', 0, 1093, 15, 1),
-(0, 'S62b5cf78957f08.74615751', 0, 1094, 16, 1),
-(0, 'S62b5cf789632f8.40770333', 0, 1095, 17, 1),
-(0, 'S62b5cf7896b307.12878036', 0, 1096, 35, 1),
-(0, 'S62b5cf78976c11.16808405', 0, 1097, 36, 1),
-(0, 'S62b5cf7897f790.23561630', 0, 1098, 106, 1),
-(0, 'S62b5cf78989fc6.03656453', 0, 1099, 107, 1),
-(0, 'S62b5cf78992830.21231400', 0, 1100, 108, 1),
-(0, 'S62b5cf7899a261.03434887', 0, 1101, 109, 1),
-(0, 'S62b5cf789a4710.23800861', 0, 1102, 110, 1),
-(0, 'S62b5cf789ad782.98879334', 0, 1103, 118, 1),
-(0, 'S62b5cf789b9358.20632156', 0, 1104, 120, 1),
-(0, 'S62b5cf789cbc94.78858079', 0, 1105, 142, 1),
-(0, 'S62b5cf789d9958.15094013', 0, 1106, 143, 1),
-(0, 'S62b5cf789ef0c9.49066971', 0, 1107, 150, 1);
+(0, 'S62ba8adcc85c93.03122369', 0, 1108, 43, 1),
+(0, 'S62ba8adcc94fc6.46536656', 0, 1109, 44, 1),
+(0, 'S62ba8adcca2df4.71356917', 0, 1110, 1, 1),
+(0, 'S62ba8adccb2f21.20973063', 0, 1111, 2, 1),
+(0, 'S62ba8adccc4da2.86987028', 0, 1112, 3, 1),
+(0, 'S62ba8adccd1f88.62621387', 0, 1113, 5, 1),
+(0, 'S62ba8adcce4c35.96298814', 0, 1114, 68, 1),
+(0, 'S62ba8adccfa824.71819256', 0, 1115, 82, 1),
+(0, 'S62ba8adcd069d9.25427404', 0, 1116, 83, 1),
+(0, 'S62ba8adcd17c77.22004355', 0, 1117, 148, 1),
+(0, 'S62ba8adcd276f1.81553873', 0, 1118, 151, 1),
+(0, 'S62ba8adcd356a8.14120672', 0, 1119, 152, 1),
+(0, 'S62ba8adcd41cd1.98775202', 0, 1120, 153, 1),
+(0, 'S62ba8adcd4d808.51545435', 0, 1121, 154, 1),
+(0, 'S62ba8adcd58d65.02965627', 0, 1122, 19, 1),
+(0, 'S62ba8adcd63cd5.32436095', 0, 1123, 20, 1),
+(0, 'S62ba8adcd6cf66.52173869', 0, 1124, 21, 1),
+(0, 'S62ba8adcd79622.81208128', 0, 1125, 22, 1),
+(0, 'S62ba8adcd87953.99493899', 0, 1126, 23, 1),
+(0, 'S62ba8adcd95e98.73492719', 0, 1127, 45, 1),
+(0, 'S62ba8adcda11a6.41653058', 0, 1128, 46, 1),
+(0, 'S62ba8adcdaf434.94566797', 0, 1129, 47, 1),
+(0, 'S62ba8adcdbbaa7.41436676', 0, 1130, 48, 1),
+(0, 'S62ba8adcdc8af5.29050801', 0, 1131, 49, 1),
+(0, 'S62ba8adcdd4313.89880131', 0, 1132, 72, 1),
+(0, 'S62ba8adcddf3a5.82186811', 0, 1133, 73, 1),
+(0, 'S62ba8adcdec343.29495317', 0, 1134, 74, 1),
+(0, 'S62ba8adcdf8235.79740311', 0, 1135, 75, 1),
+(0, 'S62ba8adce04c97.24834175', 0, 1136, 76, 1),
+(0, 'S62ba8adce10747.43154200', 0, 1137, 134, 1),
+(0, 'S62ba8adce1a8c7.56834614', 0, 1138, 37, 1),
+(0, 'S62ba8adce28ce0.10521286', 0, 1139, 38, 1),
+(0, 'S62ba8adce36ce0.71924958', 0, 1140, 50, 1),
+(0, 'S62ba8adce42a54.96458221', 0, 1141, 69, 1),
+(0, 'S62ba8adce4d282.66753048', 0, 1142, 70, 1),
+(0, 'S62ba8adce5a044.50409403', 0, 1143, 84, 1),
+(0, 'S62ba8adce68855.86937382', 0, 1144, 133, 1),
+(0, 'S62ba8adce768b7.31414598', 0, 1145, 92, 1),
+(0, 'S62ba8adce83aa8.95194388', 0, 1146, 93, 1),
+(0, 'S62ba8adce90076.02367012', 0, 1147, 94, 1),
+(0, 'S62ba8adce9bad1.44196224', 0, 1148, 95, 1),
+(0, 'S62ba8adceaaff4.34244564', 0, 1149, 96, 1),
+(0, 'S62ba8adceb68b6.40187460', 0, 1150, 97, 1),
+(0, 'S62ba8adcec3b71.84633599', 0, 1151, 137, 1),
+(0, 'S62ba8adced1623.31443495', 0, 1152, 121, 1),
+(0, 'S62ba8adcede403.93172045', 0, 1153, 122, 1),
+(0, 'S62ba8adcee9245.68411236', 0, 1154, 126, 1),
+(0, 'S62ba8adcef59f5.29965928', 0, 1155, 138, 1),
+(0, 'S62ba8adcf00fb5.71489691', 0, 1156, 144, 1),
+(0, 'S62ba8adcf0c4e6.67175939', 0, 1157, 145, 1),
+(0, 'S62ba8adcf1a672.19069946', 0, 1158, 146, 1),
+(0, 'S62ba8adcf28a29.17852296', 0, 1159, 147, 1),
+(0, 'S62ba8adcf34847.66274756', 0, 1160, 149, 1),
+(0, 'S62ba8adcf41579.00055941', 0, 1161, 41, 1),
+(0, 'S62ba8add00bdc8.22516089', 0, 1162, 42, 1),
+(0, 'S62ba8add017f64.97411962', 0, 1163, 111, 1),
+(0, 'S62ba8add022ad5.65416165', 0, 1164, 112, 1),
+(0, 'S62ba8add02fa03.39358902', 0, 1165, 113, 1),
+(0, 'S62ba8add03bda8.32355397', 0, 1166, 114, 1),
+(0, 'S62ba8add047c64.58976949', 0, 1167, 115, 1),
+(0, 'S62ba8add053a06.20323620', 0, 1168, 116, 1),
+(0, 'S62ba8add064fa1.57325823', 0, 1169, 117, 1),
+(0, 'S62ba8add074e37.73577163', 0, 1170, 132, 1),
+(0, 'S62ba8add084411.68123797', 0, 1171, 6, 1),
+(0, 'S62ba8add090e98.60298781', 0, 1172, 7, 1),
+(0, 'S62ba8add09c401.74942194', 0, 1173, 8, 1),
+(0, 'S62ba8add0acd46.21447740', 0, 1174, 10, 1),
+(0, 'S62ba8add0b9a93.86956016', 0, 1175, 11, 1),
+(0, 'S62ba8add0c65e3.04558982', 0, 1176, 12, 1),
+(0, 'S62ba8add0d2825.53073360', 0, 1177, 13, 1),
+(0, 'S62ba8add0dbc56.50175930', 0, 1178, 14, 1),
+(0, 'S62ba8add0e7176.92532690', 0, 1179, 15, 1),
+(0, 'S62ba8add0f27e3.10611641', 0, 1180, 16, 1),
+(0, 'S62ba8add0fb8e2.04748802', 0, 1181, 17, 1),
+(0, 'S62ba8add1059e6.97821094', 0, 1182, 35, 1),
+(0, 'S62ba8add1108f8.94134199', 0, 1183, 36, 1),
+(0, 'S62ba8add119c04.08487621', 0, 1184, 106, 1),
+(0, 'S62ba8add1268d5.21273303', 0, 1185, 107, 1),
+(0, 'S62ba8add1339b5.88053138', 0, 1186, 108, 1),
+(0, 'S62ba8add13e769.88520333', 0, 1187, 109, 1),
+(0, 'S62ba8add147b61.65638583', 0, 1188, 110, 1),
+(0, 'S62ba8add154997.41356224', 0, 1189, 118, 1),
+(0, 'S62ba8add1611f8.24869234', 0, 1190, 120, 1),
+(0, 'S62ba8add16afe7.13466901', 0, 1191, 142, 1),
+(0, 'S62ba8add178389.69357632', 0, 1192, 143, 1),
+(0, 'S62ba8add183968.66706124', 0, 1193, 150, 1);
 
 -- --------------------------------------------------------
 
@@ -3510,6 +3739,12 @@ ALTER TABLE `controlcaja`
 --
 ALTER TABLE `correlativo`
   ADD PRIMARY KEY (`id_numdoc`);
+
+--
+-- Indices de la tabla `cortes_parqueo`
+--
+ALTER TABLE `cortes_parqueo`
+  ADD PRIMARY KEY (`id_corte_parqueo`);
 
 --
 -- Indices de la tabla `cotizacion`
@@ -3935,7 +4170,7 @@ ALTER TABLE `altclitocli`
 -- AUTO_INCREMENT de la tabla `apertura_caja`
 --
 ALTER TABLE `apertura_caja`
-  MODIFY `id_apertura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_apertura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `banco`
@@ -4019,13 +4254,19 @@ ALTER TABLE `consignacion_detalle`
 -- AUTO_INCREMENT de la tabla `controlcaja`
 --
 ALTER TABLE `controlcaja`
-  MODIFY `id_corte` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_corte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `correlativo`
 --
 ALTER TABLE `correlativo`
   MODIFY `id_numdoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `cortes_parqueo`
+--
+ALTER TABLE `cortes_parqueo`
+  MODIFY `id_corte_parqueo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cotizacion`
@@ -4061,7 +4302,7 @@ ALTER TABLE `cuenta_pagar`
 -- AUTO_INCREMENT de la tabla `detalle_apertura`
 --
 ALTER TABLE `detalle_apertura`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
@@ -4115,37 +4356,37 @@ ALTER TABLE `estante`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_detalle`
 --
 ALTER TABLE `factura_detalle`
-  MODIFY `id_factura_detalle` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_factura_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `log_cambio_local`
 --
 ALTER TABLE `log_cambio_local`
-  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `log_detalle_cambio_local`
 --
 ALTER TABLE `log_detalle_cambio_local`
-  MODIFY `id_detalle_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detalle_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `log_update_local`
 --
 ALTER TABLE `log_update_local`
-  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT de la tabla `lote`
 --
 ALTER TABLE `lote`
-  MODIFY `id_lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `menu`
@@ -4157,7 +4398,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT de la tabla `modulo`
 --
 ALTER TABLE `modulo`
-  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
+  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_caja_tipo`
@@ -4169,13 +4410,13 @@ ALTER TABLE `movimiento_caja_tipo`
 -- AUTO_INCREMENT de la tabla `movimiento_producto`
 --
 ALTER TABLE `movimiento_producto`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_producto_detalle`
 --
 ALTER TABLE `movimiento_producto_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_producto_pendiente`
@@ -4187,7 +4428,7 @@ ALTER TABLE `movimiento_producto_pendiente`
 -- AUTO_INCREMENT de la tabla `movimiento_stock_ubicacion`
 --
 ALTER TABLE `movimiento_stock_ubicacion`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `mov_caja`
@@ -4271,25 +4512,25 @@ ALTER TABLE `precio_aut`
 -- AUTO_INCREMENT de la tabla `presentacion`
 --
 ALTER TABLE `presentacion`
-  MODIFY `id_presentacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_presentacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `presentacion_producto`
 --
 ALTER TABLE `presentacion_producto`
-  MODIFY `id_pp` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `rutas`
@@ -4301,13 +4542,13 @@ ALTER TABLE `rutas`
 -- AUTO_INCREMENT de la tabla `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `stock_ubicacion`
 --
 ALTER TABLE `stock_ubicacion`
-  MODIFY `id_su` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_su` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
@@ -4397,7 +4638,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `usuario_modulo`
 --
 ALTER TABLE `usuario_modulo`
-  MODIFY `id_mod_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1108;
+  MODIFY `id_mod_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1194;
 
 --
 -- AUTO_INCREMENT de la tabla `voucher`

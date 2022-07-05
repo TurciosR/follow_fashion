@@ -9,9 +9,11 @@
  */
 
 $username = "root";
-$password = "admin$2022**.";
+//$password = "admin$2022**.";
+
+$password = "admin$";
 $hostname = "localhost";
-$dbname = "open_2cajas";
+$dbname = "follow_fashion";
 date_default_timezone_set('America/El_Salvador');
 $conexion = mysqli_connect("$hostname","$username","$password","$dbname");
 if (mysqli_connect_errno()){

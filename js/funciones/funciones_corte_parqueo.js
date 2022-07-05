@@ -75,7 +75,7 @@ function initCorte(){
             success: function(datax){
               if(datax.status.toLowerCase() == 'success'){
                 reprintCourt(datax.id_corte_parqueo);
-                display_notify(datax.status,datax.msg);
+                display_notify('Success',datax.msg);
                 setTimeout(function(){
                   window.location.href = "admin_cortes_parqueo.php";
                 }, 1000)

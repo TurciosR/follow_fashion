@@ -28,4 +28,6 @@ ALTER TABLE `correlativo` ADD `tik_parqueo` INT NOT NULL COMMENT 'Correlativo pa
 
 ---------Update 2 del mes de Junio - 2022
 --insertar modulo de admin_cortes_parqueo
-INSERT INTO `modulo` (`id_server`, `unique_id`, `id_modulo`, `id_menu`, `nombre`, `descripcion`, `filename`, `mostrarmenu`) VALUES ('', '', NULL, '18', 'Admin cortes parqueo', 'Admin cortes parqueo', 'admi_cortes_parqueo.php', '1');
+INSERT INTO `modulo` (`id_server`, `unique_id`, `id_modulo`, `id_menu`, `nombre`, `descripcion`, `filename`, `mostrarmenu`) VALUES ('0', '', NULL, '18', 'Admin cortes parqueo', 'Admin cortes parqueo', 'admin_cortes_parqueo.php', '1'), ('0', '', NULL, '18', 'Anular parqueo', 'Anular parqueo', 'anular_parqueo', '0'), ('0', '', NULL, '18', 'Corte de parqueo', 'corte de parqueo', 'corte_parqueo.php', '1')
+
+ALTER TABLE `parqueo` ADD `anulada` TINYINT NOT NULL AFTER `id_corte_parqueo`, ADD `id_corte_parqueo` INT NOT NULL COMMENT 'si este campo es cero, el registro se incluye en un nuevo corte ' AFTER `anulada`;
