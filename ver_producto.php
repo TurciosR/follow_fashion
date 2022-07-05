@@ -131,6 +131,7 @@ $leftmarginlabel=$row_dir_print['leftmarginlabel'];
                   $select_rank="<select class='sel_r form-control'>";
                 foreach ($preciosArray as $key => $value) {
                   // code...
+                  
                   if ($value>0) {
                     $select_rank.="<option value='$value'";
                     if ($xc==0 || $precio_venta==$value) {
