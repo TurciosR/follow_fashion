@@ -1,6 +1,16 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
 
-error_reporting(E_ERROR | E_PARSE);
+//mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+//ini_set('display_errors', true);
+//error_reporting( E_ERROR | E_PARSE );
 require("_core.php");
 require("num2letras.php");
 require('fpdf/fpdf.php');
@@ -16,6 +26,29 @@ $pdf->AddFont("latin","","latin.php");
 $id_sucursal = $_SESSION["id_sucursal"];
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursal'";
 
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
+
 $resultado_emp=_query($sql_empresa);
 $row_emp=_fetch_array($resultado_emp);
 $nombre_a = utf8_decode(Mayu(utf8_decode(trim($row_emp["descripcion"]))));
@@ -27,7 +60,6 @@ $telefonos="TEL. ".$tel1;
     $fini = $_REQUEST["fini"];
     $ffin = $_REQUEST["fin"];
     $id_cuenta = $_REQUEST["id_cuenta"];
-    $logo = "img/logo_sys.jpg";
     $impress = "Impreso: ".date("d/m/Y");
     if($fini!="" && $ffin!="")
     {
@@ -60,8 +92,9 @@ $telefonos="TEL. ".$tel1;
     $logob = $datsc["logo"];
     $pdf->AddPage();
     $pdf->SetFont('Latin','',10);
-    $pdf->Image($logo,9,4,50,18);
-    //$pdf->Image($logob,220,4,50,15);
+    if($logo != ""){
+        $pdf->Image($logo, 8, 8, 33);
+    }
     $set_x = 0;
     $set_y = 6;
 
@@ -147,7 +180,9 @@ $telefonos="TEL. ".$tel1;
             $page = 1;
             $pdf->AddPage();
             $pdf->SetFont('Latin','',10);
-            $pdf->Image($logo,9,4,20,20);
+            if($logo != ""){
+                $pdf->Image($logo, 8, 8, 33);
+            }
             $set_x = 0;
             $set_y = 8;
 
@@ -225,7 +260,9 @@ $telefonos="TEL. ".$tel1;
         $page = 1;
         $pdf->AddPage();
         $pdf->SetFont('Latin','',10);
-        $pdf->Image($logo,9,4,20,20);
+        if($logo != ""){
+            $pdf->Image($logo, 8, 8, 33);
+        }
         $set_x = 0;
         $set_y = 8;
         //Encabezado General

@@ -88,10 +88,33 @@ class PDF extends FPDF
     public function Header()
     {
 
-        // Logo
-        //$this->Image('img/finanzas.jpg', 10, 10, 33);
-        $this->AddFont('latin','','latin.php');
-        $this->SetFont('latin', '', 10);
+      $id_sucursal = $_SESSION['id_sucursal'];
+      /**
+       * Obtener Logo
+       */
+      $logo = '';
+      $logos = _query(
+        "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+        UNION ALL
+        SELECT logo FROM empresa WHERE idempresa=1"
+      );
+      foreach($logos AS $key => $reg ){
+        #Esto, buscará si existe el archivo en la ruta
+        if(file_exists($reg['logo'])){
+          $logo = $reg['logo'];
+          break;//Cerrar bucle
+        }
+      }
+      #Imagen por defecto de OpenPyme
+      if($logo == ""){
+        if(file_exists('img/logo_sys.png')){
+          $logo = 'img/logo_sys.png';
+        }
+      }
+      if($logo != ""){
+        $this->Image($logo, 8, 8, 33);
+      }
+        $this->SetFont('Arial', '', 10);
         // Movernos a la derecha
         // Título
         $this->SetX(10);
@@ -102,8 +125,7 @@ class PDF extends FPDF
         $set_y=$this->GetY();
         $set_x=$this->GetX();
         $this->SetXY($set_x, $set_y);
-        $this->AddFont('latin','','latin.php');
-        $this->SetFont('latin', '', 9);
+        $this->SetFont('Arial', '', 9);
         $this->Cell(91, 5, 'PRODUCTO', "B", 0, 'L');
         $this->Cell(40, 5, utf8_decode('PRESENTACIÓN'), "B", 0, 'L');
         $this->Cell(20, 5, 'UNIDADES', "B", 0, 'L');

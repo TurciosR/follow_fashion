@@ -8,8 +8,31 @@ $pdf->SetTopMargin(2);
 $pdf->SetLeftMargin(10);
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,1);
-$pdf->AddFont("latin","","latin.php");
 $id_sucursalr = $_SESSION["id_sucursal"];
+
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursalr
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
+
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursalr'";
 $resultado_emp=_query($sql_empresa);
 $row_emp=_fetch_array($resultado_emp);
@@ -39,7 +62,6 @@ else
     $telefonos="";
   }
 }
-$logo = "img/logo_sys.jpg";
 $impress = date("d/m/Y");
 
 $id_cotizacion=$_REQUEST['id_cotizacion'];
@@ -63,15 +85,17 @@ $vigencia=$row['vigencia'];
 $titulo=utf8_decode("COTIZACIÓN: ").$numero_doc;
 
 $pdf->AddPage();
-$pdf->SetFont('Latin','',10);
-//$pdf->Image($logo,9,4,50,18);
+$pdf->SetFont('Arial','',10);
+if($logo != ""){
+  $pdf->Image($logo, 8, 8, 33);
+}
 $set_x = 0;
 $set_y = 10;
 //Encabezado General
-$pdf->SetFont('Latin','',12);
+$pdf->SetFont('Arial','',12);
 $pdf->SetXY($set_x, $set_y);
 $pdf->Cell(220,6,$empresa,0,1,'C');
-$pdf->SetFont('Latin','',10);
+$pdf->SetFont('Arial','',10);
 $pdf->SetXY($set_x, $set_y+5);
 $pdf->Cell(220,6,$sucursal,0,1,'C');
 $pdf->SetXY($set_x, $set_y+10);
@@ -88,7 +112,7 @@ $pdf->Cell(220,6,"FECHA: ".ED($fecha),0,1,'L');
 $set_y = 45;
 $set_x = 10;
 //$pdf->SetTextColor(255,255,255);
-$pdf->SetFont('Latin','',8);
+$pdf->SetFont('Arial','',8);
 $pdf->SetXY($set_x, $set_y);
 $pdf->Cell(20,5,"CANTIDAD",1,1,'C',0);
 $pdf->SetXY($set_x+20, $set_y);
@@ -122,13 +146,15 @@ if(_num_rows($result1)>0)
     {
       $page++;
       $pdf->AddPage();
-      $pdf->SetFont('Latin','',10);
-      //$pdf->Image($logo,9,4,50,18);
+      $pdf->SetFont('Arial','',10);
+      if($logo != ""){
+        $pdf->Image($logo, 8, 8, 33);
+      }
       $mm = 0;
       $i = 0;
       $set_x = 10;
       $set_y = 10;
-      $pdf->SetFont('Latin','',8);
+      $pdf->SetFont('Arial','',8);
       $pdf->SetXY($set_x, $set_y);
       $pdf->Cell(20,5,"CANTIDAD",1,1,'C',0);
       $pdf->SetXY($set_x+20, $set_y);
@@ -158,7 +184,7 @@ if(_num_rows($result1)>0)
     $presentacion = utf8_decode(Mayu(utf8_decode($row2['nombre'])));
     $descripcionp = utf8_decode(Mayu(utf8_decode($row2['descripcion'])));
 
-      $pdf->SetFont('Latin','',8);
+      $pdf->SetFont('Arial','',8);
       $pdf->SetXY($set_x, $set_y+$mm);
       $pdf->Cell(20,5,$cantidad_s,1,0,'C',0);
       $pdf->SetXY($set_x+20, $set_y+$mm);
@@ -188,7 +214,7 @@ if(_num_rows($result1)>0)
     {
       for($n=0; $n<$rest; $n++)
       {
-        $pdf->SetFont('Latin','',8);
+        $pdf->SetFont('Arial','',8);
         $pdf->SetXY($set_x, $set_y+$mm);
         $pdf->Cell(20,5,"",1,0,'C',0);
         $pdf->SetXY($set_x+20, $set_y+$mm);
@@ -204,13 +230,13 @@ if(_num_rows($result1)>0)
         $mm += 5;
       }
     }
-      $pdf->SetFont('Latin','',8);
+      $pdf->SetFont('Arial','',8);
       $pdf->SetXY($set_x, $set_y+$mm);
       $pdf->Cell(170,5,"TOTAL",1,1,'C',0);
       $pdf->SetXY($set_x+170, $set_y+$mm);
       $pdf->Cell(25,5,"$".number_format($subtt,2,".",","),1,1,'C',0);
       $mm += 15;
-      $pdf->SetFont('Latin','',10);
+      $pdf->SetFont('Arial','',10);
       $pdf->SetXY($set_x, $set_y+$mm);
       $pdf->Cell(195,5,"Precios Incluyen IVA",0,0,'L',0);
       $pdf->SetXY($set_x, $set_y+$mm+5);

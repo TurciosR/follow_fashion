@@ -51,7 +51,6 @@ $fini = ($_REQUEST["fecha"]);
 $fin = ($_REQUEST["ffin"]);
 $fini1 = $_REQUEST["fini"];
 $fin1 = $_REQUEST["ffin"];
-$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = $nombre_a;
 $titulo = "REPORTE DE INGRESOS Y EGRESOS";

@@ -1,4 +1,17 @@
 <?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+ini_set('display_errors', 1);
+error_reporting( E_ERROR | E_PARSE );
+
 require('_core.php');
 require('fpdf/fpdf.php');
 $params="";
@@ -42,17 +55,40 @@ class PDF extends FPDF
     public function Header()
     {
 
-        // Logo
-        $this->Image('img/62b1ee1c1c090_follow_logo.png', 10, 10, 33);
-        $this->AddFont('latin','','latin.php');
-        $this->SetFont('latin', '', 10);
+        $id_sucursal = $_SESSION['id_sucursal'];
+        /**
+         * Obtener Logo
+         */
+        $logo = '';
+        $logos = _query(
+          "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+          UNION ALL
+          SELECT logo FROM empresa WHERE idempresa=1"
+        );
+        foreach($logos AS $key => $reg ){
+          #Esto, buscará si existe el archivo en la ruta
+          if(file_exists($reg['logo'])){
+            $logo = $reg['logo'];
+            break;//Cerrar bucle
+          }
+        }
+        #Imagen por defecto de OpenPyme
+        if($logo == ""){
+          if(file_exists('img/logo_sys.png')){
+            $logo = 'img/logo_sys.png';
+          }
+        }
+        if($logo != ""){
+          $this->Image($logo, 8, 8, 33);
+        }
+        $this->SetFont('Arial', '', 10);
         // Movernos a la derecha
         // Título
         //$this->SetX(43);
         //$this->Cell(130, 4, 'HOJA DE CONTEO ', 0, 1, 'C');
 
         $this->Cell(195,6,$this->a,0,1,'C');
-        $this->SetFont('Latin','',10);
+        $this->SetFont('Arial','',10);
         $this->Cell(195,6,utf8_decode((Mayu(utf8_decode("Sucursal ".$this->e.": ".$this->c)))),0,1,'C');
         $this->Cell(195,6,$this->b,0,1,'C');
         $this->Cell(195,6,"REPORTE DE TRASLADO RECIBIDO",0,1,'C');
@@ -64,8 +100,7 @@ class PDF extends FPDF
         $set_y=$this->GetY();
         $set_x=$this->GetX();
         $this->SetXY($set_x, $set_y);
-        $this->AddFont('latin','','latin.php');
-        $this->SetFont('latin', '', 9);
+        $this->SetFont('Arial', '', 9);
         $this->Cell(10, 5, 'ID', 1, 0, 'L');
         $this->Cell(85, 5, 'PRODUCTO', 1, 0, 'L');
         $this->Cell(40, 5, utf8_decode('PRESENTACIÓN'), 1, 0, 'L');

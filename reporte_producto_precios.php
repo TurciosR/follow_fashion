@@ -7,7 +7,32 @@ class PDF extends FPDF
   public function Header()
   {
     //Logo
-    //$this->Image('logo_pb.png',10,8,33);
+    /**
+     * Obtener Logo
+     */
+    $id_sucursal = $_SESSION['id_sucursal'];
+    $logo = '';
+    $logos = _query(
+      "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+      UNION ALL
+      SELECT logo FROM empresa WHERE idempresa=1"
+    );
+    foreach($logos AS $key => $reg ){
+      #Esto, buscará si existe el archivo en la ruta
+      if(file_exists($reg['logo'])){
+        $logo = $reg['logo'];
+        break;//Cerrar bucle
+      }
+    }
+    #Imagen por defecto de OpenPyme
+    if($logo == ""){
+      if(file_exists('img/logo_sys.png')){
+        $logo = 'img/logo_sys.png';
+      }
+    }
+    if($logo != ""){
+      //$this->Image($logo, 8, 8, 33);
+    }
     //Arial bold 15
     $this->SetFont('Arial', 'B', 10);
 

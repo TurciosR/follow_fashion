@@ -6,6 +6,28 @@ require('fpdf/fpdf.php');
 
 $fecha = ($_REQUEST["fecha"]);
 $id_sucursal = $_REQUEST["id_sucursal"];
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
 $exento = $_REQUEST['tipo'];
 $n = 1;
 $sql_cabezera = _query("SELECT * FROM sucursal WHERE id_sucursal = '$id_sucursal'");
@@ -75,7 +97,9 @@ if($cuenta > 0)
     //$id_sucursal = $_SESSION["id_sucursal"];
     $pdf->AddPage('P', array(85, $nn));
 
-    //$pdf->Image($logob,160,4,50,15);
+    if($logo != ""){
+      //$pdf->Image($logo, 8, 8, 33);
+    }
     $set_x = 0;
     $set_y = 0;
 

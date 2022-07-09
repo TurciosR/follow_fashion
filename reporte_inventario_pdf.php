@@ -25,6 +25,32 @@ class PDF extends FPDF
       $this->Cell(280, 6, utf8_decode($this->c." ".$this->d), 0, 1, 'C');
     }
     $this->SetFont('Arial', '', 10);
+    $id_sucursal = $_SESSION["id_sucursal"];
+    /**
+     * Obtener Logo
+     */
+    $logo = '';
+    $logos = _query(
+      "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+      UNION ALL
+      SELECT logo FROM empresa WHERE idempresa=1"
+    );
+    foreach($logos AS $key => $reg ){
+      #Esto, buscará si existe el archivo en la ruta
+      if(file_exists($reg['logo'])){
+        $logo = $reg['logo'];
+        break;//Cerrar bucle
+      }
+    }
+    #Imagen por defecto de OpenPyme
+    if($logo == ""){
+      if(file_exists('img/logo_sys.png')){
+        $logo = 'img/logo_sys.png';
+      }
+    }
+    if($logo != ""){
+      $this->Image($logo, 8, 8, 33);
+  }
     $this->Cell(25, 5, utf8_decode("CODIGO"), "B", 0, 'L', 0);
     $this->Cell(95, 5, utf8_decode("PRODUCTO"), "B", 0, 'L', 0);
     $this->Cell(35, 5, utf8_decode("PRESENTACIÓN"), "B", 0, 'L', 0);
@@ -229,8 +255,6 @@ $row_emp=_fetch_array($resultado_emp);
 $nombre_a = utf8_decode(Mayu((trim($row_emp["descripcion"]))));
 //$direccion = Mayu(utf8_decode($row_emp["direccion_empresa"]));
 $direccion = utf8_decode(Mayu((trim($row_emp["direccion"]))));
-
-$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = $nombre_a;
 $fech = date("d/m/Y");

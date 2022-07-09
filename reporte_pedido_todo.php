@@ -11,8 +11,29 @@ $pdf->SetTopMargin(2);
 $pdf->SetLeftMargin(10);
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,1);
-$pdf->AddFont("latin","","latin.php");
 $id_sucursalr = $_SESSION["id_sucursal"];
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursalr
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
 $id_pedido = $_REQUEST["id_pedido"];
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursalr'";
 $fini = $_REQUEST["fini"];
@@ -28,22 +49,22 @@ $direccion = $row_emp['direccion'];
 $telefonos="TEL. ".$tel1." y ".$tel2;
 
     $id_sucursal = $_REQUEST["id_sucursal"];
-    $logo = "img/62b1ee1c1c090_follow_logo.png";
     $impress = "Impreso: ".date("d/m/Y");
     $titulo = "REPORTE DE PEDIDOS";
     $fech =date("d")." DE ".utf8_decode(Mayu(utf8_decode(meses(date("m")))))." DEL ".date("Y");
     $pdf->AddPage();
-    $pdf->SetFont('Latin','',10);
-    $pdf->Image($logo,9,4,50,18);
-    //$pdf->Image($logob,160,4,50,15);
+    $pdf->SetFont('Arial','',10);
+    if($logo != ""){
+      $pdf->Image($logo, 8, 8, 33);
+    }
     $set_x = 0;
     $set_y = 6;
 
     //Encabezado General
-    $pdf->SetFont('Latin','',12);
+    $pdf->SetFont('Arial','',12);
     $pdf->SetXY($set_x, $set_y);
     $pdf->Cell(220,6,$nombre_a,0,1,'C');
-    $pdf->SetFont('Latin','',10);
+    $pdf->SetFont('Arial','',10);
     $pdf->SetXY($set_x, $set_y+5);
     $pdf->Cell(220,6,"SUCURSAL ".$n_sucursal.": ".$direccion,0,1,'C');
     $pdf->SetXY($set_x, $set_y+10);
@@ -57,7 +78,7 @@ $telefonos="TEL. ".$tel1." y ".$tel2;
     $set_x = 13;
     //$pdf->SetFillColor(195, 195, 195);
     //$pdf->SetTextColor(255,255,255);
-    $pdf->SetFont('Latin','',10);
+    $pdf->SetFont('Arial','',10);
     $pdf->SetXY($set_x, $set_y);
     $pdf->Cell(10,5,utf8_decode("Id"),1,1,'C',0);
     $pdf->SetXY($set_x+10, $set_y);
@@ -106,17 +127,18 @@ $telefonos="TEL. ".$tel1." y ".$tel2;
             {
                 $page++;
                 $pdf->AddPage();
-                $pdf->SetFont('Latin','',10);
-                $pdf->Image($logo,9,4,50,18);
-                //$pdf->Image($logo1,245,8,24.5,24.5);
+                $pdf->SetFont('Arial','',10);
+                if($logo != ""){
+                  $pdf->Image($logo, 8, 8, 33);
+                }
                 $set_x = 0;
                 $set_y = 6;
                 $mm=5;
                 //Encabezado General
-                $pdf->SetFont('Latin','',12);
+                $pdf->SetFont('Arial','',12);
                 $pdf->SetXY($set_x, $set_y);
                 $pdf->Cell(220,6,$nombre_a,0,1,'C');
-                $pdf->SetFont('Latin','',10);
+                $pdf->SetFont('Arial','',10);
                 $pdf->SetXY($set_x, $set_y+5);
                 $pdf->Cell(220,6,$telefonos,0,1,'C');
                 $pdf->SetXY($set_x, $set_y+10);
@@ -128,7 +150,7 @@ $telefonos="TEL. ".$tel1." y ".$tel2;
                 $set_x = 5;
                 $set_y = 35;
                 $j=0;
-                $pdf->SetFont('Latin','',8);
+                $pdf->SetFont('Arial','',8);
             }
             $set_y = 45;
             $set_x = 13;
@@ -140,7 +162,7 @@ $telefonos="TEL. ".$tel1." y ".$tel2;
             $numero = $row["numero"];
             $estado = $row["estado"];
             $total = $row["total"];
-            $pdf->SetFont('Latin','',10);
+            $pdf->SetFont('Arial','',10);
             $pdf->SetXY($set_x, $set_y+$m);
             $pdf->Cell(10,5,$id_pedido,1,1,'L',0);
             $pdf->SetXY($set_x+10, $set_y+$m);

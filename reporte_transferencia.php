@@ -13,6 +13,29 @@ $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,1);
 $pdf->AddFont("latin","","latin.php");
 $id_sucursal = $_SESSION["id_sucursal"];
+
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursal'";
 
 $resultado_emp=_query($sql_empresa);
@@ -48,7 +71,6 @@ else
 }
 $fini = ($_REQUEST["fini"]);
 $fin = ($_REQUEST["ffin"]);
-$logo = "img/62b1ee1c1c090_follow_logo.png";
 $impress = "Impreso: ".date("d/m/Y");
 $title = $nombre_a;
 $titulo = "REPORTE DE TRANSFERENCIA";
@@ -78,7 +100,9 @@ if($fini=="" && $fin!=""){
 }
 $pdf->AddPage();
 $pdf->SetFont('Arial','',10);
-$pdf->Image($logo,8,4,30,25);
+if($logo != ""){
+  $pdf->Image($logo, 8, 8, 33);
+}
 $set_x = 0;
 $set_y = 6;
 //Encabezado General

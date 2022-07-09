@@ -6,6 +6,28 @@ require('fpdf/fpdf.php');
 
 $id_sucursal = $_SESSION["id_sucursal"];
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursal'";
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
 
 $resultado_emp=_query($sql_empresa);
 $row_emp=_fetch_array($resultado_emp);
@@ -20,7 +42,6 @@ $depa = $row_emp["id_departamento"];
 $muni = $row_emp["id_municipio"];
 $telefono1 = $row_emp["telefono1"];
 $telefono2 = $row_emp["telefono2"];
-$logo = $row_emp["logo"];
 $fecha_r = ($_REQUEST["fecha"]);
 $turno_r = $_REQUEST["turno"];
 $nombre_a = utf8_decode(Mayu((trim($row_emp["descripcion"]))));
@@ -30,14 +51,13 @@ $sql2 = _query("SELECT dep.* FROM departamento as dep WHERE dep.id_departamento=
 $row2 = _fetch_array($sql2);
 $departamento = $row2["nombre_departamento"];
 
-$sql3 = _query("SELECT mun.* FROM municipio as mun WHERE dep.id_municipio='$muni'");
+$sql3 = _query("SELECT mun.* FROM municipio as mun WHERE mun.id_municipio='$muni'");
 $row3 = _fetch_array($sql3);
 $municipio = $row3["nombre_municipio"];
 
     $id_producto = $_REQUEST["id_producto"];
     $fini = ($_REQUEST["fini"]);
     $fin = ($_REQUEST["fin"]);
-    $logo = "img/62b1ee1c1c090_follow_logo.png";
     $impress = "Impreso: ".date("d/m/Y");
     $title = $descripcion;
     $titulo = "KARDEX GENERAL DE PRODUCTOS";
@@ -74,9 +94,6 @@ class PDF extends FPDF
     // Cabecera de página\
     public function Header()
     {
-
-      //$this->Image($this->a,9,4,50,18);
-      //$pdf->Image($logob,160,4,50,15);
 
       //Encabezado General
       if ($this->PageNo()!=1) {
@@ -127,7 +144,7 @@ class PDF extends FPDF
         // Posición: a 1,5 cm del final
         $this->SetY(-15);
         // latin italic 8
-        $this->SetFont('latin', '', 8);
+        $this->SetFont('Arial', '', 8);
         // Número de página requiere $pdf->AliasNbPages();
         //utf8_decode() de php que convierte nuestros caracteres a ISO-8859-1
         $this-> Cell(40, 10, utf8_decode('Impreso: '.date('d/m/Y')), 0, 0, 'L');
@@ -150,13 +167,16 @@ class PDF extends FPDF
     {
       $set_x = 35;
       $set_y = 5;
-      $this->Image($logo,8,4,35,25);
+
+      if($logo != ""){
+        $this->Image($logo, 8, 8, 33);
+      }
       //Encabezado General
-      $this->SetFont('latin','',16);
+      $this->SetFont('Arial','',16);
       $this->SetXY($set_x, $set_y);
       $this->Cell(220,5,utf8_decode($nombre_lab),0,1,'C');
       $this->SetXY($set_x, $set_y+11);
-      $this->SetFont('latin','',8);
+      $this->SetFont('Arial','',8);
       $this->Cell(220,5,utf8_decode(ucwords(("Depto. ".utf8_decode($departamento)))),0,1,'C');
       $this->SetXY($set_x+68, $set_y+5);
       $this->MultiCell(85,3.5,str_replace(" Y ", " y ",ucwords(utf8_decode(($direccion))))."",0,'C',0);
@@ -178,7 +198,7 @@ class PDF extends FPDF
             $set_y =$this-> GetY();
             $set_x =$this->GetX();
 
-            $this->SetFont('latin','',8);
+            $this->SetFont('Arial','',8);
             $this->SetXY($set_x, $set_y);
             $this->Cell(18,10,"FECHA",1,1,'C',0);
             $this->SetXY($set_x+18, $set_y);
@@ -222,13 +242,12 @@ $pdf->SetLeftMargin(4);
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true, 15);
 $pdf->AliasNbPages();
-$pdf->AddFont("latin","","latin.php");
 
 
     $pdf->AddPage();
      $pdf->cabecera($logo,$nombre_a,$direccion,$departamento,$telefono1,$telefono2,$whatsapp,$email,$titulo,$fech);
     $pdf->otr();
-    $pdf->SetFont('latin','',10);
+    $pdf->SetFont('Arial','',10);
 
     $sqla=_query("SELECT id_producto FROM producto  ORDER by id_producto ASC");
     //$pdf->SetTextColor(0,0,0);

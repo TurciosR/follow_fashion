@@ -1,5 +1,16 @@
 <?php
-error_reporting(E_ERROR | E_PARSE);
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
+// mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// ini_set('display_errors', true);
+// error_reporting( E_ERROR | E_PARSE );
 require("_core.php");
 require("num2letras.php");
 require('fpdf/fpdf.php');
@@ -11,9 +22,31 @@ $pdf->SetTopMargin(2);
 $pdf->SetLeftMargin(10);
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,1);
-$pdf->AddFont("latin","","latin.php");
 $id_sucursal = $_SESSION["id_sucursal"];
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursal'";
+
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
 
 $resultado_emp=_query($sql_empresa);
 $row_emp=_fetch_array($resultado_emp);
@@ -28,7 +61,6 @@ $telefonos="TEL. ".$tel1;
     $id_producto = $_REQUEST["id_producto"];
     $fini = $_REQUEST["fini"];
     $fin = $_REQUEST["fin"];
-    $logo = $row_emp['logo'];
     $impress = "Impreso: ".date("d/m/Y");
     $title = $descripcion;
     $titulo = "KARDEX DE PRODUCTO";
@@ -61,17 +93,18 @@ $telefonos="TEL. ".$tel1;
                     AND CAST(m.fecha AS DATE) BETWEEN '$fini' AND '$fin' ORDER BY md.fecha,md.hora ASC";
 
     $pdf->AddPage();
-    $pdf->SetFont('Latin','',10);
-    $pdf->Image($logo,9,4,50,18);
-    //$pdf->Image($logob,160,4,50,15);
+    $pdf->SetFont('Arial','',10);
+    if($logo != ""){
+        $pdf->Image($logo, 8, 8, 33);
+    }
     $set_x = 0;
     $set_y = 6;
 
     //Encabezado General
-    $pdf->SetFont('Latin','',12);
+    $pdf->SetFont('Arial','',12);
     $pdf->SetXY($set_x, $set_y);
     $pdf->MultiCell(280,6,$title,0,'C',0);
-    $pdf->SetFont('Latin','',10);
+    $pdf->SetFont('Arial','',10);
     $pdf->SetXY($set_x, $set_y+5);
     $pdf->Cell(280,6,$telefonos,0,1,'C');
     $pdf->SetXY($set_x, $set_y+10);
@@ -90,7 +123,7 @@ $telefonos="TEL. ".$tel1;
     $set_x = 4;
 
 
-    $pdf->SetFont('Latin','',8);
+    $pdf->SetFont('Arial','',8);
     $pdf->SetXY($set_x, $set_y);
     $pdf->Cell(18,10,"FECHA",1,1,'C',0);
     $pdf->SetXY($set_x+18, $set_y);
@@ -149,7 +182,7 @@ $telefonos="TEL. ".$tel1;
                 $set_x = 4;
                 //$pdf->SetFillColor(195, 195, 195);
                 //$pdf->SetTextColor(255,255,255);
-                $pdf->SetFont('Latin','',8);
+                $pdf->SetFont('Arial','',8);
                 $pdf->SetXY($set_x, $set_y);
                 $pdf->Cell(18,10,"FECHA",1,1,'C',0);
                 $pdf->SetXY($set_x+18, $set_y);
@@ -186,7 +219,7 @@ $telefonos="TEL. ".$tel1;
                 $set_y = 20;
                 $i=0;
                 $mm=0;
-                $pdf->SetFont('Latin','',8);
+                $pdf->SetFont('Arial','',8);
             }
             $fechadoc = ED($row["fecha"]);
             if($row["tipo"] == "ENTRADA" || $row["proceso"] =="TRR")

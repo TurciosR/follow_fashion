@@ -11,7 +11,6 @@ $pdf->SetTopMargin(2);
 $pdf->SetLeftMargin(10);
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,1);
-$pdf->AddFont("latin","","latin.php");
 
     $sql_empresa1 = "SELECT * FROM configuracion WHERE id_configuracion='1'";
     $resultado_emp1=_query($sql_empresa1);
@@ -19,6 +18,29 @@ $pdf->AddFont("latin","","latin.php");
     $nombre_e = utf8_decode(Mayu(utf8_decode(trim($row_emp1["nombre_empresa"]))));
     $direccion_e = utf8_decode(Mayu(utf8_decode(trim($row_emp1["direccion_empresa"]))));
     $dara = $direccion;
+    $id_sucursal = $_SESSION['id_sucursal'];
+    /**
+     * Obtener Logo
+     */
+    $logo = '';
+    $logos = _query(
+    "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+    UNION ALL
+    SELECT logo FROM empresa WHERE idempresa=1"
+    );
+    foreach($logos AS $key => $reg ){
+    #Esto, buscará si existe el archivo en la ruta
+    if(file_exists($reg['logo'])){
+        $logo = $reg['logo'];
+        break;//Cerrar bucle
+    }
+    }
+    #Imagen por defecto de OpenPyme
+    if($logo == ""){
+    if(file_exists('img/logo_sys.png')){
+        $logo = 'img/logo_sys.png';
+    }
+    }
 
     $mes = $_REQUEST["mes"];
     $anio = $_REQUEST["anio"];
@@ -36,17 +58,18 @@ $pdf->AddFont("latin","","latin.php");
     }
     $sql.=$and." GROUP BY producto.id_cliente ORDER BY cliente.nombre ASC, producto.anio_venta DESC, producto.mes_venta DESC";
     $pdf->AddPage();
-    $pdf->SetFont('Latin','',10);
-    //$pdf->Image($logo,9,4,50,18);
-    //$pdf->Image($logob,160,4,50,15);
+    $pdf->SetFont('Arial','',10);
+    if($logo != ""){
+        $pdf->Image($logo, 8, 8, 33);
+    }
     $set_x = 0;
     $set_y = 6;
 
     //Encabezado General
-    $pdf->SetFont('Latin','',12);
+    $pdf->SetFont('Arial','',12);
     $pdf->SetXY($set_x, $set_y);
     $pdf->MultiCell(220,6,$title,0,'C',0);
-    $pdf->SetFont('Latin','',10);
+    $pdf->SetFont('Arial','',10);
     $pdf->SetXY($set_x, $set_y+5);
     $pdf->Cell(220,6,$nombre_e,0,1,'C');
     $pdf->SetXY($set_x, $set_y+10);
@@ -60,7 +83,7 @@ $pdf->AddFont("latin","","latin.php");
     $set_x = 7.5;
     //$pdf->SetFillColor(195, 195, 195);
     //$pdf->SetTextColor(255,255,255);
-    $pdf->SetFont('Latin','',8);
+    $pdf->SetFont('Arial','',8);
     $pdf->SetXY($set_x, $set_y);
     $pdf->Cell(10,5,utf8_decode("N°"),1,1,'C',0);
     $pdf->SetXY($set_x+10, $set_y);
@@ -90,10 +113,10 @@ $pdf->AddFont("latin","","latin.php");
             {
                 $page++;
                 //Encabezado General
-                $pdf->SetFont('Latin','',12);
+                $pdf->SetFont('Arial','',12);
                 $pdf->SetXY($set_x, $set_y);
                 $pdf->MultiCell(220,6,$title,0,'C',0);
-                $pdf->SetFont('Latin','',10);
+                $pdf->SetFont('Arial','',10);
                 $pdf->SetXY($set_x, $set_y+5);
                 $pdf->Cell(220,6,$nombre_e,0,1,'C');
                 $pdf->SetXY($set_x, $set_y+10);

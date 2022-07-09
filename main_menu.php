@@ -1,10 +1,42 @@
+<?php
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$_SESSION[id_sucursal]
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
+?>
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
       <li class="nav-header" style="background: #FFFFFF;">
         <div class="dropdown profile-element">
           <span>
-            <img alt="image" class="img-responsive" src="img/62b1ee1c1c090_follow_logo.png" width="180px" style="margin-left: -3%;">
+            <img alt="image" class="img-responsive" src="<?php echo $logo;?>" width="180px" style="margin-left: -3%;">
           </span>
       </div>
       <div class="logo-element">

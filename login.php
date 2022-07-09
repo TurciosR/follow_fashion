@@ -1,9 +1,10 @@
 <?php
+
+include('_conexion.php');
 session_start();
-ini_set('error_reporting', E_ALL);
+ini_set('error_reporting', E_ERROR | E_PARSE);
 ini_set('display_errors', 1);
 if($_POST){
-	require_once "_conexion.php";
 	$user=$_POST["username"];
   $pass=MD5($_POST["password"]);
   $sql = "SELECT usuario.*, empleado.id_tipo_empleado FROM usuario LEFT JOIN empleado ON empleado.id_empleado=usuario.id_empleado WHERE  usuario = '$user' AND password ='$pass'";
@@ -46,7 +47,26 @@ if($_POST){
 	}else{
 		$error_msg = "Datos ingresados no son correctos";
 	}
-	db_close();
+	//db_close();
+}
+
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query("SELECT logo FROM empresa WHERE idempresa=1");
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
 }
 
 // Page setup
@@ -80,7 +100,7 @@ include_once "header.php";
 				</p>
 				<div>
 					<center>
-				 		<img alt="image" class="img-responsive" src="img/62b1ee1c1c090_follow_logo.png" width="300px" height="200px" style="margin-top: -3%;">
+				 		<img alt="image" class="img-responsive" src="<?php echo $logo; ?>" width="300px" height="200px" style="margin-top: -3%;">
 					</center>
 				</div>
 			</div>
@@ -110,7 +130,7 @@ include_once "header.php";
 		<hr/>
 		<div class="row">
 			<div class="col-md-6">
-				Sistema
+				
 			</div>
 			<div class="col-md-6 text-right">
 				<small>Todos los derechos reservados <a href="http://opensolutionsystems.com" target="_blank">OpenSolutionSystems</a> © <?=date('Y');?></small>

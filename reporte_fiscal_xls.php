@@ -39,7 +39,6 @@
     $fin = $_REQUEST["ffin"];
     $fini1 = ED($_REQUEST["fini"]);
     $fin1 = ED($_REQUEST["ffin"]);
-    $logo = "img/62b1ee1c1c090_follow_logo.png";
     $impress = "Impreso: ".date("d/m/Y");
     $title = $nombre_a;
     $titulo = "REPORTE FISCAL";

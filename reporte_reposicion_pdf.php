@@ -13,14 +13,36 @@ $pdf->SetAutoPageBreak(true, 1);
 $pdf->AddFont("latin", "", "latin.php");
 
 $id_sucursal = $_SESSION["id_sucursal"];
+
+/**
+ * Obtener Logo
+ */
+$logo = '';
+$logos = _query(
+  "SELECT logo FROM sucursal WHERE id_sucursal=$id_sucursal
+  UNION ALL
+  SELECT logo FROM empresa WHERE idempresa=1"
+);
+foreach($logos AS $key => $reg ){
+  #Esto, buscará si existe el archivo en la ruta
+  if(file_exists($reg['logo'])){
+    $logo = $reg['logo'];
+    break;//Cerrar bucle
+  }
+}
+#Imagen por defecto de OpenPyme
+if($logo == ""){
+  if(file_exists('img/logo_sys.png')){
+    $logo = 'img/logo_sys.png';
+  }
+}
+
 $sql_empresa = "SELECT * FROM sucursal WHERE id_sucursal='$id_sucursal'";
 $resultado_emp=_query($sql_empresa);
 $row_emp=_fetch_array($resultado_emp);
 $nombre_a = utf8_decode(Mayu(utf8_decode(trim($row_emp["descripcion"]))));
 //$direccion = Mayu(utf8_decode($row_emp["direccion_empresa"]));
 $direccion = utf8_decode(Mayu(utf8_decode(trim($row_emp["direccion"]))));
-
-$logo = "img/62b1ee1c1c090_follow_logo.png";
 
 $title = $nombre_a;
 $fech = date("d/m/Y");
@@ -43,7 +65,9 @@ if($id_proveedor!=-1)
 
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 10);
-//$pdf->Image($logo,9,4,45,18);
+if($logo != ""){
+  $pdf->Image($logo, 8, 8, 33);
+}
 $set_x = 5;
 $set_y = 10;
 
